@@ -1,25 +1,26 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#include "Tile.hpp"
+#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 
-class Tile
-{
+class Board {
 public:
-    std::string resource;
-    int number;
-
-    Tile(std::string res = "None", int num = 0) : resource(res), number(num) {}
-};
-
-class Board
-{
-public:
-    std::vector<std::vector<Tile>> grid;
-
     Board();
-    void displayBoard() const;
+    void initializeBoard();
+    void draw(sf::RenderWindow& window);
+
+private:
+    std::vector<Tile> tiles;
+    std::vector<sf::ConvexShape> hexShapes;
+    std::vector<sf::Text> hexTexts;
+    sf::Font font;
+
+    std::string getTerrainString(const Tile& tile) const;
+    sf::Color getTerrainColor(const Tile& tile) const;
+    void createHexShapes();
 };
 
-#endif // BOARD_HPP
+#endif // BOARD_H

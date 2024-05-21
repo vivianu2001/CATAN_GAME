@@ -1,15 +1,28 @@
+
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "ResourceType.hpp"
+#include <string>
 
-class Tile
-{
+class Tile {
 public:
-    ResourceType resource;
-    int number;
+    enum Terrain {
+        FIELDS,
+        FORESTS,
+        MOUNTAINS,
+        HILLS,
+        PASTURES,
+        DESERT
+    };
 
-    Tile(ResourceType res = ResourceType::None, int num = 0) : resource(res), number(num) {}
+    Tile(Terrain terrain, int number);
+
+    Terrain getTerrain() const;
+    int getNumber() const;
+
+private:
+    Terrain terrain;
+    int number;
 };
 
-#endif // TILE_HPP
+#endif 

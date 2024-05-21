@@ -1,13 +1,20 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
-DEPS = ResourceType.hpp Tile.hpp Board.hpp
-OBJ = main.o Board.o
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
-%.o: %.cpp $(DEPS)
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+all: catan
 
-catan: $(OBJ)
-	$(CXX) -o $@ $^ $(CXXFLAGS)
+catan: main.o Board.o Tile.o
+	$(CXX) $(CXXFLAGS) -o catan main.o Board.o Tile.o $(LDFLAGS)
+
+main.o: main.cpp Board.hpp Tile.hpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
+Board.o: Board.cpp Board.hpp Tile.hpp
+	$(CXX) $(CXXFLAGS) -c Board.cpp
+
+Tile.o: Tile.cpp Tile.hpp
+	$(CXX) $(CXXFLAGS) -c Tile.cpp
 
 clean:
 	rm -f *.o catan
