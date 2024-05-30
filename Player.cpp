@@ -1,51 +1,88 @@
-#include "Player.hpp"
-#include <iostream>
+#pragma once
+#include <string>
+#include <unordered_map>
 
-Player::Player(const std::string &name) : name(name) {}
-
-std::string Player::getName() const
+enum class ResourceType
 {
-    return name;
-}
-
-void Player::addResource(ResourceType resource, int amount)
+    Wood,
+    Brick,
+    Wool,
+    Grain,
+    Ore
+};
+enum class DevelopmentCardType
 {
-    resources[resource] += amount;
-}
+    Knight,
+    RoadBuilding,
+    YearOfPlenty,
+    Monopoly,
+    VictoryPoint
+};
 
-void Player::removeResource(ResourceType resource, int amount)
+class Player
 {
-    resources[resource] -= amount;
-}
+public:
+    Player(const std::string &name) : name(name) {}
 
-int Player::getResourceAmount(ResourceType resource) const
-{
-    auto it = resources.find(resource);
-    return it != resources.end() ? it->second : 0;
-}
+    // Resource management
+    void addResource(ResourceType type, int amount)
+    {
+        resources[type] += amount;
+    }
 
-void Player::placeSettlement(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board)
-{
-    // Implement logic to place a settlement on the board
-    std::cout << name << " placed a settlement at " << places[0] << " and " << places[1] << " with numbers " << placesNum[0] << " and " << placesNum[1] << std::endl;
-    // For simplicity, we add a dummy index to the settlements vector
-    settlements.push_back(placesNum[0]);
-}
+    int getResourceCount(ResourceType type) const
+    {
+        auto it = resources.find(type);
+        return it != resources.end() ? it->second : 0;
+    }
 
-void Player::placeRoad(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board)
-{
-    // Implement logic to place a road on the board
-    std::cout << name << " placed a road at " << places[0] << " and " << places[1] << " with numbers " << placesNum[0] << " and " << placesNum[1] << std::endl;
-    // For simplicity, we add a dummy index to the roads vector
-    roads.push_back(placesNum[1]);
-}
+    // Development cards
+    void addDevelopmentCard(DevelopmentCardType card)
+    {
+        developmentCards[card]++;
+    }
 
-const std::vector<int> &Player::getSettlements() const
-{
-    return settlements;
-}
+    int getDevelopmentCardCount(DevelopmentCardType card) const
+    {
+        auto it = developmentCards.find(card);
+        return it != developmentCards.end() ? it->second : 0;
+    }
 
-const std::vector<int> &Player::getRoads() const
-{
-    return roads;
-}
+    // Victory points
+    void addVictoryPoint(int points)
+    {
+        victoryPoints += points;
+    }
+
+    int getVictoryPoints() const
+    {
+        return victoryPoints;
+    }
+
+    // Example method to handle building a road or settlement
+    bool buildSettlement()
+    {
+        if (canBuildSettlement())
+        {
+            // Deduct resources, add settlement, etc.
+            return true;
+        }
+        return false;
+    }
+
+    // Example check for build conditions
+    bool canBuildSettlement() const
+    {
+        // Check if the player has enough resources to build a settlement
+        return getResourceCount(ResourceType::Wood) > 0 &&
+               getResourceCount(ResourceType::Brick) > 0 &&
+               getResourceCount(ResourceType::Wool) > 0 &&
+               getResourceCount(ResourceType::Grain) > 0;
+    }
+
+private:
+    std::string name;
+    std::unordered_map<ResourceType, int> resources;
+    std::unordered_map<DevelopmentCardType, int> developmentCards;
+    int victoryPoints = 0;
+};

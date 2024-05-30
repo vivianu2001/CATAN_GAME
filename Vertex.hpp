@@ -1,12 +1,37 @@
-// vertex.hpp
-#ifndef VERTEX_HPP
-#define VERTEX_HPP
+#pragma once
 
 class Vertex
 {
 public:
-    Vertex() = default;
-    // Additional attributes and methods can be added as needed
-};
+    // Enum to represent the type of building on the vertex
+    enum BuildingType
+    {
+        None,
+        Settlement,
+        City
+    };
 
-#endif // VERTEX_HPP
+    // Constructor that initializes the vertex with a unique ID
+    Vertex(int id);
+
+    // Check if the vertex is occupied by any building
+    bool isOccupied() const;
+
+    // Build a settlement or city on the vertex and assign it to a player
+    void build(BuildingType type, int playerId);
+
+    // Get the unique ID of the vertex
+    int getId() const;
+
+    // Get the type of building on this vertex
+    BuildingType getBuildingType() const;
+
+    // Get the ID of the player who owns the building on this vertex
+    int getOwner() const;
+
+private:
+    int id;                                         // Unique identifier for the vertex
+    bool occupied = false;                          // Flag to check if there is a building
+    BuildingType buildingType = BuildingType::None; // Type of building on the vertex
+    int ownerPlayerId = -1;                         // ID of the player who owns the building, -1 if no owner
+};

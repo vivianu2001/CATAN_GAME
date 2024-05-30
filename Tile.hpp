@@ -1,16 +1,15 @@
-// tile.hpp
-#ifndef TILE_HPP
-#define TILE_HPP
-
+#pragma once
 #include <vector>
+#include "Vertex.hpp"
+#include "Edge.hpp"
 
 enum class ResourceType
 {
-    Wood,
-    Brick,
-    Wool,
-    Oat,
     Iron,
+    Wool,
+    Wood,
+    Oat,
+    Brick,
     None
 };
 
@@ -19,19 +18,15 @@ class Tile
 public:
     Tile(ResourceType resource, int number);
 
-    ResourceType getResource() const;
-    int getNumber() const;
-    std::vector<int> getVertices() const;
-    std::vector<int> getEdges() const;
+    void addVertex(Vertex *vertex);
+    void addEdge(Edge *edge);
 
-    void addVertex(int vertexIndex);
-    void addEdge(int edgeIndex);
+    const std::vector<Vertex *> &getVertices() const;
+    const std::vector<Edge *> &getEdges() const;
 
 private:
     ResourceType resource;
     int number;
-    std::vector<int> vertices;
-    std::vector<int> edges;
+    std::vector<Vertex *> vertices;
+    std::vector<Edge *> edges;
 };
-
-#endif // TILE_HPP

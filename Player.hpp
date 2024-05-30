@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "resource_type.hpp"
-#include "residence.hpp"
+
 #include "Board.hpp"
 
 class Player
