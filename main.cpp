@@ -1,69 +1,71 @@
 #include <iostream>
 #include <vector>
 #include "Player.hpp"
-#include "Catan.hpp"
 #include "Board.hpp"
 
 int main()
 {
-    // std::string name;
-    // std::cout << "Enter name for player 1: ";
-    // std::getline(std::cin, name);
-    // Player p1(name);
+    std::vector<Player> players;
+    std::string name;
 
-    // std::cout << "Enter name for player 2: ";
-    // std::getline(std::cin, name);
-    // Player p2(name);
+    // Prompt for player names interactively
+    std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
 
-    // std::cout << "Enter name for player 3: ";
-    // std::getline(std::cin, name);
-    // Player p3(name);
+    for (int i = 1; i <= 3; ++i)
+    {
+        std::cout << "Enter name for Player " << i << ": ";
+        std::getline(std::cin, name);
+        players.emplace_back(name);
+    }
 
-    // Catan catan(p1, p2, p3);
-    // catan.chooseStartingPlayer();   // Print the name of the starting player
-    // Board board = catan.getBoard(); // Get the board of the game
+    // Initialize the game board
+    Board board;
+    board.initializeBoard();
 
-    // // Players place their initial settlements and roads
-    // for (int i = 0; i < 2; ++i)
+    // Display a welcome message for each player
+    for (const auto &player : players)
+    {
+        std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
+    }
+    // std::vector<int> settlementPositions = {0, 3, 7, 11, 15}; // Example vertex IDs for initial settlements
+    // std::vector<int> roadPositions = {1, 4, 8, 12, 16};       // Example edge IDs for initial roads
+
+    // // Setup initial game state for each player
+    // for (auto &player : players)
     // {
-    //     for (Player &player : {p1, p2, p3})
-    //     {
-    //         std::vector<std::string> places;
-    //         std::vector<int> placesNum;
-    //         std::string place;
-    //         int placeNum;
+    //     for (int i = 0; i < 2; ++i)
+    //     { // Each player places 2 settlements and 2 roads
+    //         // Assume board.getVertices() and board.getEdges() provide access to these components
+    //         Vertex &settlementVertex = board.getVertices().at(settlementPositions[i]);
+    //         Edge &roadEdge = board.getEdges().at(roadPositions[i]);
 
-    //         std::cout << player.getName() << ", choose 2 locations for your settlement:\n";
-    //         for (int j = 0; j < 2; ++j)
+    //         if (!settlementVertex.isOccupied())
     //         {
-    //             std::cout << "Location " << (j + 1) << ": ";
-    //             std::getline(std::cin, place);
-    //             places.push_back(place);
-    //             std::cout << "Number " << (j + 1) << ": ";
-    //             std::cin >> placeNum;
-    //             std::cin.ignore(); // Ignore the newline character
-    //             placesNum.push_back(placeNum);
+    //             settlementVertex.build(Vertex::BuildingType::Settlement, player.getId());
+    //             player.addVictoryPoint(1); // Each settlement is worth 1 victory point
+
+    //             // Allocate resources based on adjacent tiles
+    //             for (Tile &tile : board.getAdjacentTiles(settlementVertex))
+    //             {
+    //                 player.addResource(tile.getResourceType(), 1); // Each adjacent tile gives 1 resource
+    //             }
     //         }
 
-    //         player.placeSettlement(places, placesNum, board);
-
-    //         std::cout << player.getName() << ", choose 2 locations for your road:\n";
-    //         places.clear();
-    //         placesNum.clear();
-    //         for (int j = 0; j < 2; ++j)
+    //         if (!roadEdge.hasRoad())
     //         {
-    //             std::cout << "Location " << (j + 1) << ": ";
-    //             std::getline(std::cin, place);
-    //             places.push_back(place);
-    //             std::cout << "Number " << (j + 1) << ": ";
-    //             std::cin >> placeNum;
-    //             std::cin.ignore(); // Ignore the newline character
-    //             placesNum.push_back(placeNum);
+    //             roadEdge.buildRoad(player.getId());
     //         }
-
-    //         player.placeRoad(places, placesNum, board);
     //     }
     // }
 
+    // Announce starting players and their resources
+    for (const auto &player : players)
+    {
+        std::cout << player.getName() << " starts with " << player.getResourceCount(ResourceType::Wood) << " wood, "
+                  << player.getResourceCount(ResourceType::Brick) << " brick, and other resources." << std::endl;
+    }
+
+    // Start game loop or more setup here
+    // For now, just exit
     return 0;
 }

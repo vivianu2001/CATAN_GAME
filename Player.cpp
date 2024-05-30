@@ -1,88 +1,66 @@
-#pragma once
-#include <string>
-#include <unordered_map>
+#include "Player.hpp"
 
-enum class ResourceType
+// Constructor that initializes the player with a name
+Player::Player(const std::string &name) : name(name), victoryPoints(0) {}
+
+// Add resources to the player's inventory
+void Player::addResource(ResourceType type, int amount)
 {
-    Wood,
-    Brick,
-    Wool,
-    Grain,
-    Ore
-};
-enum class DevelopmentCardType
+    resources[type] += amount;
+}
+
+// Retrieve the count of a specific resource type
+int Player::getResourceCount(ResourceType type) const
 {
-    Knight,
-    RoadBuilding,
-    YearOfPlenty,
-    Monopoly,
-    VictoryPoint
-};
+    auto it = resources.find(type);
+    return it != resources.end() ? it->second : 0;
+}
 
-class Player
+// Add a development card to the player's inventory
+void Player::addDevelopmentCard(DevelopmentCardType card)
 {
-public:
-    Player(const std::string &name) : name(name) {}
+    developmentCards[card]++;
+}
 
-    // Resource management
-    void addResource(ResourceType type, int amount)
+// Retrieve the count of a specific type of development card
+int Player::getDevelopmentCardCount(DevelopmentCardType card) const
+{
+    auto it = developmentCards.find(card);
+    return it != developmentCards.end() ? it->second : 0;
+}
+
+// Increment the player's victory points
+void Player::addVictoryPoint(int points)
+{
+    victoryPoints += points;
+}
+
+// Retrieve the player's total victory points
+int Player::getVictoryPoints() const
+{
+    return victoryPoints;
+}
+
+// Example gameplay logic for building a settlement
+bool Player::buildSettlement()
+{
+    if (canBuildSettlement())
     {
-        resources[type] += amount;
+        // Assume resource costs are deducted here
+        return true;
     }
+    return false;
+}
 
-    int getResourceCount(ResourceType type) const
-    {
-        auto it = resources.find(type);
-        return it != resources.end() ? it->second : 0;
-    }
-
-    // Development cards
-    void addDevelopmentCard(DevelopmentCardType card)
-    {
-        developmentCards[card]++;
-    }
-
-    int getDevelopmentCardCount(DevelopmentCardType card) const
-    {
-        auto it = developmentCards.find(card);
-        return it != developmentCards.end() ? it->second : 0;
-    }
-
-    // Victory points
-    void addVictoryPoint(int points)
-    {
-        victoryPoints += points;
-    }
-
-    int getVictoryPoints() const
-    {
-        return victoryPoints;
-    }
-
-    // Example method to handle building a road or settlement
-    bool buildSettlement()
-    {
-        if (canBuildSettlement())
-        {
-            // Deduct resources, add settlement, etc.
-            return true;
-        }
-        return false;
-    }
-
-    // Example check for build conditions
-    bool canBuildSettlement() const
-    {
-        // Check if the player has enough resources to build a settlement
-        return getResourceCount(ResourceType::Wood) > 0 &&
-               getResourceCount(ResourceType::Brick) > 0 &&
-               getResourceCount(ResourceType::Wool) > 0 &&
-               getResourceCount(ResourceType::Grain) > 0;
-    }
-
-private:
-    std::string name;
-    std::unordered_map<ResourceType, int> resources;
-    std::unordered_map<DevelopmentCardType, int> developmentCards;
-    int victoryPoints = 0;
-};
+// Check if the player has sufficient resources to build a settlement
+bool Player::canBuildSettlement() const
+{
+    // Simplified check; real game might have specific resource requirements
+    return getResourceCount(ResourceType::Wood) > 0 &&
+           getResourceCount(ResourceType::Brick) > 0 &&
+           getResourceCount(ResourceType::Wool) > 0 &&
+           getResourceCount(ResourceType::Grain) > 0;
+}
+const std::string& Player::getName() const {
+    return name;
+}

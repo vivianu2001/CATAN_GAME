@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 
-SRCS = main.cpp Board.cpp Edge.cpp Tile.cpp Vertex.cpp
-HEADERS = Board.hpp Tile.hpp Edge.hpp Vertex.hpp
+SRCS = main.cpp Board.cpp Edge.cpp Tile.cpp Vertex.cpp Player.cpp
+HEADERS = Board.hpp Tile.hpp Edge.hpp Vertex.hpp Player.hpp
 
 all: catan
 

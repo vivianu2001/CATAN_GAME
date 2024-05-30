@@ -1,33 +1,35 @@
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
-
+#pragma once
 #include <string>
-#include <vector>
-#include <map>
-
-#include "Board.hpp"
+#include <unordered_map>
+#include "Enums.hpp"
 
 class Player
 {
 public:
-    Player(const std::string &name);
+    // Constructor that takes a player's name
+    explicit Player(const std::string &name);
 
-    std::string getName() const;
-    void addResource(ResourceType resource, int amount);
-    void removeResource(ResourceType resource, int amount);
-    int getResourceAmount(ResourceType resource) const;
+    // Methods to manage resources
+    void addResource(ResourceType type, int amount);
+    int getResourceCount(ResourceType type) const;
 
-    void placeSettlement(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board);
-    void placeRoad(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board);
+    // Methods to manage development cards
+    void addDevelopmentCard(DevelopmentCardType card);
+    int getDevelopmentCardCount(DevelopmentCardType card) const;
 
-    const std::vector<int> &getSettlements() const;
-    const std::vector<int> &getRoads() const;
+    // Methods to manage victory points
+    void addVictoryPoint(int points);
+    int getVictoryPoints() const;
+
+    // Gameplay functionality
+    bool buildSettlement();
+    bool canBuildSettlement() const;
+    // Getter for the player's name
+    const std::string &getName() const;
 
 private:
-    std::string name;
-    std::map<ResourceType, int> resources;
-    std::vector<int> settlements;
-    std::vector<int> roads;
+    std::string name;                                              // Player's name
+    std::unordered_map<ResourceType, int> resources;               // Map of resources and their counts
+    std::unordered_map<DevelopmentCardType, int> developmentCards; // Map of development cards and their counts
+    int victoryPoints = 0;                                         // Total number of victory points
 };
-
-#endif // PLAYER_HPP

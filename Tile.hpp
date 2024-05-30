@@ -2,16 +2,7 @@
 #include <vector>
 #include "Vertex.hpp"
 #include "Edge.hpp"
-
-enum class ResourceType
-{
-    Iron,
-    Wool,
-    Wood,
-    Oat,
-    Brick,
-    None
-};
+#include "Enums.hpp"
 
 class Tile
 {
