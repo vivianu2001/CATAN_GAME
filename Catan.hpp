@@ -1,15 +1,24 @@
-#ifndef BOARD_HPP
-#define BOARD_HPP
+#ifndef CATAN_HPP
+#define CATAN_HPP
 
+#include "Board.hpp"
+#include "Player.hpp"
 #include <vector>
-#include "Tile.hpp"
 
-class Board {
+class Catan
+{
 public:
-    std::vector<Tile> tiles;
+    Catan(Player &p1, Player &p2, Player &p3);
 
-    Board();
-    // Add methods for managing the board if needed
+    void ChooseStartingPlayer();
+    Board getBoard() const;
+    void printWinner() const;
+    void initializePlayers();
+
+private:
+    Board board;
+    std::vector<Player> players;
+    Player *startingPlayer;
 };
 
-#endif // BOARD_HPP
+#endif // CATAN_HPP

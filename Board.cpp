@@ -16,10 +16,12 @@ Board::Board()
 void Board::initializeBoard()
 {
     tiles = {
-        {Tile(Tile::FIELDS, 2), Tile(Tile::FORESTS, 3), Tile(Tile::MOUNTAINS, 4), Tile(Tile::HILLS, 5), Tile(Tile::DESERT, 0),
-         Tile(Tile::PASTURES, 6), Tile(Tile::FIELDS, 8), Tile(Tile::FORESTS, 9), Tile(Tile::MOUNTAINS, 10), Tile(Tile::HILLS, 11),
-         Tile(Tile::PASTURES, 12), Tile(Tile::FIELDS, 13), Tile(Tile::FORESTS, 14), Tile(Tile::MOUNTAINS, 15), Tile(Tile::HILLS, 16),
-         Tile(Tile::DESERT, 17), Tile(Tile::PASTURES, 18), Tile(Tile::FIELDS, 19), Tile(Tile::FORESTS, 20)}};
+        {Tile(Tile::MOUNTAINS, 10), Tile(Tile::PASTURES, 2), Tile(Tile::FORESTS, 9),
+         Tile(Tile::FIELDS, 12), Tile(Tile::HILLS, 6),
+         Tile(Tile::PASTURES, 4), Tile(Tile::HILLS, 10), 
+         Tile(Tile::FIELDS, 9), Tile(Tile::FORESTS, 11), Tile(Tile::DESERT, 0),
+         Tile(Tile::FORESTS, 3), Tile(Tile::MOUNTAINS, 8), Tile(Tile::FORESTS,8), Tile(Tile::MOUNTAINS, 3), Tile(Tile::FIELDS, 4),
+         Tile(Tile::PASTURES, 5), Tile(Tile::HILLS, 5), Tile(Tile::FIELDS, 6), Tile(Tile::PASTURES, 11)}};
 }
 
 std::string Board::getTerrainString(const Tile &tile) const
