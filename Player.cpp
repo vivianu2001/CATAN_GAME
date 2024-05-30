@@ -1,99 +1,51 @@
 #include "Player.hpp"
 #include <iostream>
 
-Player::Player(const std::string &name) : name(name), victoryPoints(0)
+Player::Player(const std::string &name) : name(name) {}
+
+std::string Player::getName() const
 {
+    return name;
+}
+
+void Player::addResource(ResourceType resource, int amount)
+{
+    resources[resource] += amount;
+}
+
+void Player::removeResource(ResourceType resource, int amount)
+{
+    resources[resource] -= amount;
+}
+
+int Player::getResourceAmount(ResourceType resource) const
+{
+    auto it = resources.find(resource);
+    return it != resources.end() ? it->second : 0;
 }
 
 void Player::placeSettlement(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board)
 {
-    // Implement logic to place a settlement
-    victoryPoints++;
+    // Implement logic to place a settlement on the board
+    std::cout << name << " placed a settlement at " << places[0] << " and " << places[1] << " with numbers " << placesNum[0] << " and " << placesNum[1] << std::endl;
+    // For simplicity, we add a dummy index to the settlements vector
+    settlements.push_back(placesNum[0]);
 }
 
 void Player::placeRoad(const std::vector<std::string> &places, const std::vector<int> &placesNum, Board &board)
 {
-    // Implement logic to place a road
+    // Implement logic to place a road on the board
+    std::cout << name << " placed a road at " << places[0] << " and " << places[1] << " with numbers " << placesNum[0] << " and " << placesNum[1] << std::endl;
+    // For simplicity, we add a dummy index to the roads vector
+    roads.push_back(placesNum[1]);
 }
 
-void Player::rollDice()
+const std::vector<int> &Player::getSettlements() const
 {
-    int diceRoll = (rand() % 6 + 1) + (rand() % 6 + 1);
-    std::cout << name << " rolled a " << diceRoll << std::endl;
-    // Distribute resources based on the dice roll and the player's settlements
+    return settlements;
 }
 
-void Player::trade(Player &otherPlayer, const std::string &give, const std::string &take, int giveAmount, int takeAmount)
+const std::vector<int> &Player::getRoads() const
 {
-    Resource::Type giveResource = stringToResource(give);
-    Resource::Type takeResource = stringToResource(take);
-
-    // Implement trading logic
-}
-
-void Player::buyDevelopmentCard()
-{
-    // Implement logic to buy a development card
-}
-
-void Player::endTurn()
-{
-    // Implement logic to end the player's turn
-}
-
-void Player::printPoints() const
-{
-    std::cout << name << " has " << victoryPoints << " points." << std::endl;
-}
-
-Resource::Type Player::stringToResource(const std::string &resourceStr) const
-{
-    if (resourceStr == "wood") return Resource::WOOD;
-    if (resourceStr == "brick") return Resource::BRICK;
-    if (resourceStr == "wool") return Resource::WOOL;
-    if (resourceStr == "grain") return Resource::GRAIN;
-    if (resourceStr == "ore") return Resource::ORE;
-    return Resource::NONE;
-}
-
-bool Player::hasResources(const std::map<Resource::Type, int> &requiredResources) const
-{
-    for (const auto &req : requiredResources)
-    {
-        if (resources.at(req.first) < req.second)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-void Player::addResource(Resource::Type type, int quantity)
-{
-    resources[type] += quantity;
-}
-
-void Player::removeResource(Resource::Type type, int quantity)
-{
-    if (resources[type] >= quantity)
-    {
-        resources[type] -= quantity;
-    }
-}
-
-// Add missing methods
-void Player::addSettlement()
-{
-    // Implement logic to add a settlement
-    victoryPoints++;
-}
-
-void Player::addRoad()
-{
-    // Implement logic to add a road
-}
-
-void Player::addVictoryPoints(int points)
-{
-    victoryPoints += points;
+    return roads;
 }

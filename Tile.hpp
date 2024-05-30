@@ -1,49 +1,37 @@
+// tile.hpp
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "Resource.hpp"
+#include <vector>
+
+enum class ResourceType
+{
+    Wood,
+    Brick,
+    Wool,
+    Oat,
+    Iron,
+    None
+};
 
 class Tile
 {
 public:
-    enum Terrain
-    {
-        FIELDS,
-        FORESTS,
-        MOUNTAINS,
-        HILLS,
-        PASTURES,
-        DESERT
-    };
+    Tile(ResourceType resource, int number);
 
-    Tile(Terrain terrain, int number); // Declare the constructor
+    ResourceType getResource() const;
+    int getNumber() const;
+    std::vector<int> getVertices() const;
+    std::vector<int> getEdges() const;
 
-    Terrain getTerrain() const; // Declare getTerrain method
-    int getNumber() const; // Declare getNumber method
-
-    Resource::Type getResource() const
-    {
-        switch (terrain)
-        {
-        case FIELDS:
-            return Resource::GRAIN;
-        case FORESTS:
-            return Resource::WOOD;
-        case MOUNTAINS:
-            return Resource::ORE;
-        case HILLS:
-            return Resource::BRICK;
-        case PASTURES:
-            return Resource::WOOL;
-        case DESERT:
-        default:
-            return Resource::NONE;
-        }
-    }
+    void addVertex(int vertexIndex);
+    void addEdge(int edgeIndex);
 
 private:
-    Terrain terrain;
+    ResourceType resource;
     int number;
+    std::vector<int> vertices;
+    std::vector<int> edges;
 };
 
 #endif // TILE_HPP

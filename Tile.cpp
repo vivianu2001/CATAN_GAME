@@ -1,13 +1,34 @@
 #include "Tile.hpp"
 
-Tile::Tile(Terrain terrain, int number) : terrain(terrain), number(number) {}
+Tile::Tile(ResourceType resource, int number)
+    : resource(resource), number(number) {}
 
-Tile::Terrain Tile::getTerrain() const
+ResourceType Tile::getResource() const
 {
-    return terrain;
+    return resource;
 }
 
 int Tile::getNumber() const
 {
     return number;
+}
+
+std::vector<int> Tile::getVertices() const
+{
+    return vertices;
+}
+
+std::vector<int> Tile::getEdges() const
+{
+    return edges;
+}
+
+void Tile::addVertex(int vertexIndex)
+{
+    vertices.push_back(vertexIndex);
+}
+
+void Tile::addEdge(int edgeIndex)
+{
+    edges.push_back(edgeIndex);
 }

@@ -1,9 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
-LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
-SRCS = main.cpp Player.cpp Catan.cpp Board.cpp Tile.cpp
-HEADERS = Player.hpp Catan.hpp Board.hpp Tile.hpp Resource.hpp
+SRCS = main.cpp Board.cpp Edge.cpp Tile.cpp Vertex.cpp Player.cpp Catan.cpp
+HEADERS = Board.hpp Tile.hpp Edge.hpp Vertex.hpp Player.hpp Catan.hpp
 
 all: catan
 
