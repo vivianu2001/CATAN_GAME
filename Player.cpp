@@ -1,7 +1,15 @@
 #include "Player.hpp"
+int Player::playerCount = 0;
 
 // Constructor that initializes the player with a name
-Player::Player(const std::string &name) : name(name), victoryPoints(0) {}
+Player::Player(const std::string &name) : name(name), victoryPoints(0)
+{
+    playerId = playerCount++;
+}
+int Player::getPlayerId() const
+{
+    return playerId;
+}
 
 // Add resources to the player's inventory
 void Player::addResource(ResourceType type, int amount)
@@ -61,6 +69,7 @@ bool Player::canBuildSettlement() const
            getResourceCount(ResourceType::Wool) > 0 &&
            getResourceCount(ResourceType::Grain) > 0;
 }
-const std::string& Player::getName() const {
+const std::string &Player::getName() const
+{
     return name;
 }

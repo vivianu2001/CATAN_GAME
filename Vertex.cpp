@@ -32,3 +32,21 @@ int Vertex::getOwner() const
 {
     return ownerPlayerId;
 }
+
+void Vertex::setEdges(Edge *e1, Edge *e2)
+{
+    edge1 = e1;
+    edge2 = e2;
+}
+void Vertex::setOwner(int id)
+{
+    ownerPlayerId = id;
+}
+int Vertex::getEdge1() const
+{
+    return edge1->getId();
+}
+int Vertex::getEdge2() const
+{
+    return edge2->getId();
+}

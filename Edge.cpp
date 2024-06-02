@@ -7,12 +7,6 @@ bool Edge::hasRoad() const
     return road; // Return whether there is a road on this edge.
 }
 
-void Edge::buildRoad(int playerId)
-{
-    road = true;              // Mark the edge as having a road.
-    ownerPlayerId = playerId; // Assign the road to the given player.
-}
-
 int Edge::getOwner() const
 {
     return ownerPlayerId; // Return the ID of the player who owns the road.
@@ -21,4 +15,24 @@ int Edge::getOwner() const
 int Edge::getId() const
 {
     return id;
+}
+void Edge::setVertices(Vertex *v1, Vertex *v2)
+{
+    vertex1 = v1;
+    vertex2 = v2;
+}
+
+int Edge::getVertex1() const
+{
+    return vertex1 ? vertex1->getId() : -1; // Check for nullptr before dereferencing
+}
+
+int Edge::getVertex2() const
+{
+    return vertex2 ? vertex2->getId() : -1; // Check for nullptr before dereferencing
+}
+
+void Edge::setOwner(int owner)
+{
+    ownerPlayerId = owner;
 }

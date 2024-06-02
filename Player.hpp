@@ -26,8 +26,11 @@ public:
     bool canBuildSettlement() const;
     // Getter for the player's name
     const std::string &getName() const;
+    int getPlayerId() const;
 
 private:
+    static int playerCount;                                        // Static variable to keep track of the number of player objects
+    int playerId;                                                  // Player ID
     std::string name;                                              // Player's name
     std::unordered_map<ResourceType, int> resources;               // Map of resources and their counts
     std::unordered_map<DevelopmentCardType, int> developmentCards; // Map of development cards and their counts

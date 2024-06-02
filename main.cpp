@@ -27,8 +27,11 @@ int main()
     {
         std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
     }
-    // std::vector<int> settlementPositions = {0, 3, 7, 11, 15}; // Example vertex IDs for initial settlements
-    // std::vector<int> roadPositions = {1, 4, 8, 12, 16};       // Example edge IDs for initial roads
+
+    board.buildSettlement(1, 0);
+    board.buildRoad(1, 1);
+    //  std::vector<int> settlementPositions = {0, 3, 7, 11, 15}; // Example vertex IDs for initial settlements
+    //  std::vector<int> roadPositions = {1, 4, 8, 12, 16};       // Example edge IDs for initial roads
 
     // // Setup initial game state for each player
     // for (auto &player : players)

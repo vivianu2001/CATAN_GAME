@@ -1,5 +1,12 @@
-#pragma once
+#ifndef VERTEX_HPP
+#define VERTEX_HPP
 
+#include <vector>
+#include "Player.hpp"
+#include "Edge.hpp"
+
+// Forward declaration of Edge class
+class Edge;
 class Vertex
 {
 public:
@@ -28,10 +35,18 @@ public:
 
     // Get the ID of the player who owns the building on this vertex
     int getOwner() const;
+    int getEdge1() const;
+    int getEdge2() const;
+
+    void setEdges(Edge *e1, Edge *e2);
+    void setOwner(int id);
 
 private:
     int id;                                         // Unique identifier for the vertex
     bool occupied = false;                          // Flag to check if there is a building
     BuildingType buildingType = BuildingType::None; // Type of building on the vertex
-    int ownerPlayerId = -1;                         // ID of the player who owns the building, -1 if no owner
+    int ownerPlayerId = -1;
+    Edge *edge1;
+    Edge *edge2; // ID of the player who owns the building, -1 if no owner
 };
+#endif // VERTEX_HPP

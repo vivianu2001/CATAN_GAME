@@ -1,5 +1,6 @@
 // board.cpp
 #include "Board.hpp"
+#include <iostream>
 
 Board::Board()
 {
@@ -8,14 +9,14 @@ Board::Board()
 
 void Board::initializeBoard()
 {
-    std::vector<Vertex> vertices;
+    // std::vector<Vertex> vertices;
     vertices.reserve(54);
     for (int i = 0; i < 54; ++i)
     {
         vertices.emplace_back(i);
     }
 
-    std::vector<Edge> edges;
+    // std::vector<Edge> edges;
     edges.reserve(71);
     for (int i = 0; i < 71; ++i)
     {
@@ -44,7 +45,13 @@ void Board::initializeBoard()
     tiles.emplace_back(ResourceType::Wool, 11);
 
     tiles[0].addVertex(&vertices[0]);
+    vertices[0].setEdges(&edges[0], &edges[1]);
+    edges[0].setVertices(&vertices[0], &vertices[4]);
+    edges[1].setVertices(&vertices[0], &vertices[1]);
+
     tiles[0].addVertex(&vertices[1]);
+    vertices[1].setEdges(&edges[1], &edges[2]);
+
     tiles[0].addVertex(&vertices[2]);
     tiles[0].addVertex(&vertices[3]);
     tiles[0].addVertex(&vertices[4]);
@@ -298,4 +305,48 @@ void Board::initializeBoard()
 const std::vector<Tile> &Board::getTiles() const
 { // Match the declaration: const function returning a const reference.
     return tiles;
+}
+bool Board::buildSettlement(int playerId, int vertexId)
+{
+    if (vertexId < 0 || vertexId >= vertices.size())
+    {
+        std::cout << "Invalid vertex ID" << std::endl;
+        return false;
+    }
+
+    if (vertices[vertexId].getOwner() != -1)
+    {
+        std::cout << "Settlement is already " << std::endl;
+        return false;
+    }
+    else
+    {
+        vertices[vertexId].setOwner(playerId);
+        std::cout << "Settlement is ready " << std::endl;
+        return true;
+    }
+}
+
+bool Board::buildRoad(int playerId, int edgeId)
+{
+    int vertex1 = edges[edgeId].getVertex1();
+    int vertex2 = edges[edgeId].getVertex2();
+
+    if (edgeId < 0 || edgeId >= edges.size())
+    {
+        std::cout << "Invalid edge ID" << std::endl;
+        return false;
+    }
+
+    if (vertices[vertex1].getOwner() == playerId || vertices[vertex2].getOwner() == playerId)
+    {
+        edges[edgeId].setOwner(playerId);
+        std::cout << "Road placed successfully" << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cout << "Failed to place road" << std::endl;
+        return false;
+    }
 }
