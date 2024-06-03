@@ -30,6 +30,35 @@ void Player::printResources() const
                   << ", Amount: " << resource.second << std::endl;
     }
 }
+void Player::addRoad(int edgeId)
+{
+    roads.push_back(edgeId);
+}
+void Player::printStatus() const
+{
+    std::cout << "Player " << name << " status:" << std::endl;
+
+    std::cout << "Resources:" << std::endl;
+    for (const auto &resource : resources)
+    {
+        std::cout << "Resource: " << static_cast<int>(resource.first)
+                  << ", Amount: " << resource.second << std::endl;
+    }
+
+    std::cout << "Roads:" << std::endl;
+    for (const auto &road : roads)
+    {
+        std::cout << "Edge ID: " << road << std::endl;
+    }
+
+    std::cout << "Settlements:" << std::endl;
+    for (const auto &settlement : settlements)
+    {
+        std::cout << "Vertex ID: " << settlement << std::endl;
+    }
+
+    std::cout << "Victory Points: " << victoryPoints << std::endl;
+}
 
 // Add a development card to the player's inventory
 void Player::addDevelopmentCard(DevelopmentCardType card)
@@ -79,4 +108,32 @@ bool Player::canBuildSettlement() const
 const std::string &Player::getName() const
 {
     return name;
+}
+int Player::getRoadCount() const
+{
+    return roads.size();
+}
+
+// Retrieve the player's roads
+const std::vector<int> &Player::getRoads() const
+{
+    return roads;
+}
+
+// Add a settlement to the player's inventory
+void Player::addSettlement(int vertexId)
+{
+    settlements.push_back(vertexId);
+}
+
+// Retrieve the player's total settlement count
+int Player::getSettlementCount() const
+{
+    return settlements.size();
+}
+
+// Retrieve the player's settlements
+const std::vector<int> &Player::getSettlements() const
+{
+    return settlements;
 }

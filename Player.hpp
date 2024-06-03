@@ -28,6 +28,14 @@ public:
     const std::string &getName() const;
     int getPlayerId() const;
     void printResources() const; // Add this lin
+    void addRoad(int edgeId);
+    int getRoadCount() const;
+    const std::vector<int> &getRoads() const;
+
+    void addSettlement(int vertexId);
+    int getSettlementCount() const;
+    const std::vector<int> &getSettlements() const;
+    void printStatus() const;
 
 private:
     static int playerCount;                                        // Static variable to keep track of the number of player objects
@@ -35,5 +43,7 @@ private:
     std::string name;                                              // Player's name
     std::unordered_map<ResourceType, int> resources;               // Map of resources and their counts
     std::unordered_map<DevelopmentCardType, int> developmentCards; // Map of development cards and their counts
-    int victoryPoints = 0;                                         // Total number of victory points
+    int victoryPoints = 0;
+    std::vector<int> roads;
+    std::vector<int> settlements; // Total number of victory points
 };

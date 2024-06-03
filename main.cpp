@@ -28,19 +28,17 @@ int main()
         std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
     }
 
-    std::vector<ResourceType> resources = board.initializeSettlements(players[0].getPlayerId(), 0);
+    std::vector<ResourceType> resources = board.initializeSettlements(players[0].getPlayerId(), 3);
     for (const auto &resource : resources)
     {
         players[0].addResource(resource, 1);
     }
+    players[0].addSettlement(3);
 
-    // Output the resources of player 1 for verification
-    players[0].printResources();
-
+    board.buildRoad(players[0].getPlayerId(), 4);
+    players[0].addRoad(4);
+    players[0].printStatus();
     return 0;
-
-    //  std::vector<int> settlementPositions = {0, 3, 7, 11, 15}; // Example vertex IDs for initial settlements
-    //  std::vector<int> roadPositions = {1, 4, 8, 12, 16};       // Example edge IDs for initial roads
 
     // // Setup initial game state for each player
     // for (auto &player : players)
