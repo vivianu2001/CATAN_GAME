@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "Enums.hpp"
 #include <iostream>
+class Board;
 class Player
 {
 public:
@@ -46,6 +47,11 @@ public:
     void printStatus() const;
     void discardResources();           // New method to handle discarding resources
     int getTotalResourceCount() const; // New method to get the total count of resources
+    void useDevelopmentCard(std::vector<Player> &players, Board &board);
+    void useMonopoly(std::vector<Player> &players);
+    void useRoadBuilding(Board &board);
+    void useYearOfPlenty();
+    void useKnight();
 
 private:
     static int playerCount;                                        // Static variable to keep track of the number of player objects

@@ -70,3 +70,17 @@ inline ResourceType stringToResourceType(const std::string &resource)
         return ResourceType::Oat;
     return ResourceType::None;
 }
+inline DevelopmentCardType stringToDevelopmentCardType(const std::string &card)
+{
+    if (card == "Knight")
+        return DevelopmentCardType::Knight;
+    if (card == "Road Building")
+        return DevelopmentCardType::RoadBuilding;
+    if (card == "Year of Plenty")
+        return DevelopmentCardType::YearOfPlenty;
+    if (card == "Monopoly")
+        return DevelopmentCardType::Monopoly;
+    if (card == "Victory Point")
+        return DevelopmentCardType::VictoryPoint;
+    throw std::invalid_argument("Unknown development card type");
+}

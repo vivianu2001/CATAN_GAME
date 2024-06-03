@@ -5,9 +5,10 @@
 #include "Tile.hpp"
 #include "Vertex.hpp"
 #include "Edge.hpp"
-#include "Player.hpp"
+
 #include "BoardConfig.hpp"
 #include "Enums.hpp"
+class Player;
 
 class Board
 {
@@ -19,7 +20,7 @@ public:
     const std::vector<Edge> &getEdges() const;
     void initializeBoard();
     // Build settlement
-    bool buildSettlement(int playerId, int vertexId,bool start);
+    bool buildSettlement(int playerId, int vertexId, bool start);
     std::vector<ResourceType> initializeSettlements(int player, int vertex_id);
 
     // Build road

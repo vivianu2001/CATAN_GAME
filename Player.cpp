@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include <iostream>
+#include "Board.hpp"
 
 int Player::playerCount = 0;
 
@@ -245,4 +246,97 @@ int Player::getTotalResourceCount() const
         total += resource.second;
     }
     return total;
+}
+void Player::useDevelopmentCard(std::vector<Player> &players, Board &board)
+{
+    std::cout << "Choose a development card to use: ";
+    for (const auto &card : developmentCards)
+    {
+        std::cout << developmentCardTypeToString(card.first) << " (" << card.second << "), ";
+    }
+    std::cout << std::endl;
+
+    std::string cardType;
+    std::getline(std::cin, cardType);
+    DevelopmentCardType card = stringToDevelopmentCardType(cardType);
+
+    if (developmentCards[card] > 0)
+    {
+        developmentCards[card]--;
+        switch (card)
+        {
+        case DevelopmentCardType::Monopoly:
+            useMonopoly(players);
+            break;
+        case DevelopmentCardType::RoadBuilding:
+            useRoadBuilding(board);
+            break;
+        case DevelopmentCardType::YearOfPlenty:
+            useYearOfPlenty();
+            break;
+        case DevelopmentCardType::Knight:
+            useKnight();
+            break;
+        case DevelopmentCardType::VictoryPoint:
+            addVictoryPoint(1);
+            break;
+        default:
+            std::cout << "Invalid development card." << std::endl;
+            break;
+        }
+    }
+    else
+    {
+        std::cout << "You do not have this development card." << std::endl;
+    }
+}
+
+void Player::useMonopoly(std::vector<Player> &players)
+{
+    std::string resource;
+    std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
+    std::getline(std::cin, resource);
+    ResourceType resType = stringToResourceType(resource);
+
+    for (auto &player : players)
+    {
+        if (player.getPlayerId() != playerId)
+        {
+            int amount = player.getResourceCount(resType);
+            player.addResource(resType, -amount);
+            addResource(resType, amount);
+        }
+    }
+}
+
+void Player::useRoadBuilding(Board &board)
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        int edgeId;
+        std::cout << "Enter edge ID to build road: ";
+        std::cin >> edgeId;
+        std::cin.ignore();
+        if (board.buildRoad(playerId, edgeId))
+        {
+            addRoad(edgeId);
+        }
+    }
+}
+
+void Player::useYearOfPlenty()
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        std::string resource;
+        std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
+        std::getline(std::cin, resource);
+        ResourceType resType = stringToResourceType(resource);
+        addResource(resType, 1);
+    }
+}
+
+void Player::useKnight()
+{
+    addVictoryPoint(2); // Assuming the largest army logic is handled elsewhere
 }

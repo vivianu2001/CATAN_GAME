@@ -136,7 +136,7 @@ int main(int argc, char **argv)
                 }
                 else if (action == "use_development_card")
                 {
-                    // Implement logic to use a development card
+                    player.useDevelopmentCard(players, board);
                 }
                 else if (action == "end_turn")
                 {
