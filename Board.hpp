@@ -7,7 +7,6 @@
 #include "Edge.hpp"
 #include "Player.hpp"
 
-
 class Board
 {
 public:
@@ -16,6 +15,7 @@ public:
     void initializeBoard();
     // Build settlement
     bool buildSettlement(int playerId, int vertexId);
+    std::vector<ResourceType> initializeSettlements(int player, int vertex_id);
 
     // Build road
     bool buildRoad(int playerId, int edgeId);
@@ -25,5 +25,10 @@ private:
     std::vector<Tile> tiles; // Vector containing all the tiles of the board.
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
+    void initializeVertices();
+    void initializeEdges();
+    void initializeTiles();
+    void linkVerticesAndEdges();
+    void linkTiles();
 };
 #endif // BOARD_HPP

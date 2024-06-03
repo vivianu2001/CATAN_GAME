@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include "Enums.hpp"
-
+#include <iostream>
 class Player
 {
 public:
@@ -27,6 +27,7 @@ public:
     // Getter for the player's name
     const std::string &getName() const;
     int getPlayerId() const;
+    void printResources() const; // Add this lin
 
 private:
     static int playerCount;                                        // Static variable to keep track of the number of player objects

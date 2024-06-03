@@ -33,9 +33,14 @@ int Vertex::getOwner() const
     return ownerPlayerId;
 }
 
-void Vertex::setEdges(Edge *e1, Edge *e2)
+void Vertex::setEdge_1(Edge *e1)
 {
+
     edge1 = e1;
+}
+void Vertex::setEdge_2(Edge *e2)
+{
+
     edge2 = e2;
 }
 void Vertex::setOwner(int id)
@@ -44,9 +49,32 @@ void Vertex::setOwner(int id)
 }
 int Vertex::getEdge1() const
 {
-    return edge1->getId();
+    if (edge1 != NULL)
+    {
+        return edge1->getId();
+    }
+    else
+    {
+        return -1;
+    }
 }
 int Vertex::getEdge2() const
 {
-    return edge2->getId();
+    if (edge2 != NULL)
+    {
+        return edge2->getId();
+    }
+    else
+    {
+        return -1;
+    }
+}
+std::vector<int> Vertex::getAdjacentTiles() const
+{
+    return adjacentTiles;
+}
+
+void Vertex::addAdjacentTile(int tileId)
+{
+    adjacentTiles.push_back(tileId);
 }

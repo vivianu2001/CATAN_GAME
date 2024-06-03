@@ -38,15 +38,19 @@ public:
     int getEdge1() const;
     int getEdge2() const;
 
-    void setEdges(Edge *e1, Edge *e2);
+    void setEdge_1(Edge *e1);
+    void setEdge_2(Edge *e1);
     void setOwner(int id);
+    void addAdjacentTile(int tileId);
+    std::vector<int> getAdjacentTiles() const;
 
 private:
     int id;                                         // Unique identifier for the vertex
     bool occupied = false;                          // Flag to check if there is a building
     BuildingType buildingType = BuildingType::None; // Type of building on the vertex
     int ownerPlayerId = -1;
-    Edge *edge1;
-    Edge *edge2; // ID of the player who owns the building, -1 if no owner
+    Edge *edge1 = NULL;
+    Edge *edge2 = NULL; // ID of the player who owns the building, -1 if no owner
+    std::vector<int> adjacentTiles;
 };
 #endif // VERTEX_HPP

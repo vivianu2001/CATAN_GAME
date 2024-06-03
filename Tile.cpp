@@ -21,3 +21,7 @@ const std::vector<Edge *> &Tile::getEdges() const
 {
     return edges;
 }
+ResourceType Tile::getResource() const
+{
+    return resource; // Add this line
+}

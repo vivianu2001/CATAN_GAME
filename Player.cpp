@@ -10,18 +10,25 @@ int Player::getPlayerId() const
 {
     return playerId;
 }
+int Player::getResourceCount(ResourceType type) const
+{
+    auto it = resources.find(type);
+    return it != resources.end() ? it->second : 0;
+}
 
 // Add resources to the player's inventory
 void Player::addResource(ResourceType type, int amount)
 {
     resources[type] += amount;
 }
-
-// Retrieve the count of a specific resource type
-int Player::getResourceCount(ResourceType type) const
+void Player::printResources() const
 {
-    auto it = resources.find(type);
-    return it != resources.end() ? it->second : 0;
+    std::cout << "Player " << name << " resources:" << std::endl;
+    for (const auto &resource : resources)
+    {
+        std::cout << "Resource: " << static_cast<int>(resource.first)
+                  << ", Amount: " << resource.second << std::endl;
+    }
 }
 
 // Add a development card to the player's inventory
