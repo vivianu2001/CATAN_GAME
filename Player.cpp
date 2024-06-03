@@ -82,14 +82,14 @@ int Player::getVictoryPoints() const
 }
 
 // Example gameplay logic for building a settlement
-bool Player::buildSettlement()
+bool Player::buildSettlement(int vertexId)
 {
-    if (canBuildSettlement())
-    {
-        // Assume resource costs are deducted here
-        return true;
-    }
-    return false;
+    resources[ResourceType::Wood]--;
+    resources[ResourceType::Brick]--;
+    resources[ResourceType::Wool]--;
+    resources[ResourceType::Oat]--;
+    addSettlement(vertexId);
+    return true;
 }
 
 // Check if the player has sufficient resources to build a settlement
@@ -115,38 +115,29 @@ bool Player::canBuildCity() const
 
 bool Player::buildRoad(int edgeId)
 {
-    if (canBuildRoad())
-    {
-        // Deduct resource costs
-        resources[ResourceType::Wood]--;
-        resources[ResourceType::Brick]--;
-        addRoad(edgeId);
-        return true;
-    }
-    return false;
+    // Deduct resource costs
+    resources[ResourceType::Wood]--;
+    resources[ResourceType::Brick]--;
+    addRoad(edgeId);
+    return true;
 }
 
 bool Player::buildCity(int vertexId)
 {
-    if (canBuildCity())
+    // Deduct resource costs
+    resources[ResourceType::Iron] -= 3;
+    resources[ResourceType::Oat] -= 2;
+
+    // Remove settlement if it exists
+    auto it = std::find(settlements.begin(), settlements.end(), vertexId);
+    if (it != settlements.end())
     {
-        // Deduct resource costs
-        resources[ResourceType::Iron] -= 3;
-        resources[ResourceType::Oat] -= 2;
-
-        // Remove settlement if it exists
-        auto it = std::find(settlements.begin(), settlements.end(), vertexId);
-        if (it != settlements.end())
-        {
-            settlements.erase(it);
-            addVictoryPoint(1); // Remove the settlement point
-        }
-
-        cities.push_back(vertexId);
-        addVictoryPoint(2);
-        return true;
+        settlements.erase(it);
+        addVictoryPoint(-1); // Remove the settlement point
     }
-    return false;
+
+    addCity(vertexId);
+    return true;
 }
 
 const std::string &Player::getName() const
@@ -169,6 +160,7 @@ const std::vector<int> &Player::getRoads() const
 void Player::addSettlement(int vertexId)
 {
     settlements.push_back(vertexId);
+    addVictoryPoint(1);
 }
 
 // Retrieve the player's total settlement count
@@ -187,6 +179,7 @@ const std::vector<int> &Player::getSettlements() const
 void Player::addCity(int vertexId)
 {
     cities.push_back(vertexId);
+    addVictoryPoint(1);
 }
 
 // Retrieve the player's total city count

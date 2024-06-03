@@ -15,10 +15,11 @@ public:
     Board();                                   // Constructor for the board.
     const std::vector<Tile> &getTiles() const; // Returns a reference to the vector of tiles.
     const std::vector<Vertex> &getVertices() const;
+    bool isTwoRoadSegmentsAway(int vertexId) const;
     const std::vector<Edge> &getEdges() const;
     void initializeBoard();
     // Build settlement
-    bool buildSettlement(int playerId, int vertexId);
+    bool buildSettlement(int playerId, int vertexId,bool start);
     std::vector<ResourceType> initializeSettlements(int player, int vertex_id);
 
     // Build road

@@ -92,10 +92,6 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
     {
         player.addRoad(road2);
     }
-
-    // Add initial victory points
-    player.addVictoryPoint(2);
-
     // Print player status
     player.printStatus();
     std::cout << "-----------------------------------\n";
@@ -155,7 +151,7 @@ void takeTurn(Board &board, Player &player, std::vector<Player> &players)
             {
                 if (board.buildRoad(player.getPlayerId(), edgeId))
                 {
-                    player.addRoad(edgeId);
+                    player.buildRoad(edgeId);
                 }
                 else
                 {
@@ -175,9 +171,9 @@ void takeTurn(Board &board, Player &player, std::vector<Player> &players)
             std::cin.ignore();
             if (player.canBuildSettlement())
             {
-                if (board.buildSettlement(player.getPlayerId(), vertexId))
+                if (board.buildSettlement(player.getPlayerId(), vertexId, false))
                 {
-                    player.addSettlement(vertexId);
+                    player.buildSettlement(vertexId);
                 }
                 else
                 {
@@ -199,7 +195,7 @@ void takeTurn(Board &board, Player &player, std::vector<Player> &players)
             {
                 if (board.buildCity(player.getPlayerId(), vertexId))
                 {
-                    player.addCity(vertexId);
+                    player.buildCity(vertexId);
                 }
                 else
                 {

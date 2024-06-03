@@ -35,4 +35,5 @@ int Edge::getVertex2() const
 void Edge::setOwner(int owner)
 {
     ownerPlayerId = owner;
+    road = true;
 }

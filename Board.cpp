@@ -64,22 +64,8 @@ void Board::linkVerticesAndEdges()
         int v1 = edgeToVertices[i].first;
         int v2 = edgeToVertices[i].second;
         edges[i].setVertices(&vertices[v1], &vertices[v2]);
-        if (vertices[v1].getEdge1() == -1)
-        {
-            vertices[v1].setEdge_1(&edges[i]);
-        }
-        else
-        {
-            vertices[v1].setEdge_2(&edges[i]);
-        }
-        if (vertices[v2].getEdge1() == -1)
-        {
-            vertices[v2].setEdge_1(&edges[i]);
-        }
-        else
-        {
-            vertices[v2].setEdge_2(&edges[i]);
-        }
+        vertices[v1].addEdge(&edges[i]);
+        vertices[v2].addEdge(&edges[i]);
     }
 }
 
@@ -106,7 +92,29 @@ const std::vector<Vertex> &Board::getVertices() const
 { // Match the declaration: const function returning a const reference.
     return vertices;
 }
-bool Board::buildSettlement(int playerId, int vertexId)
+bool Board::isTwoRoadSegmentsAway(int vertexId) const
+{
+    for (const auto &edgeId : vertices[vertexId].getAdjacentEdges())
+    {
+        int neighbor1 = edges[edgeId].getVertex1();
+        int neighbor2 = edges[edgeId].getVertex2();
+        int neighborVertexId = (neighbor1 == vertexId) ? neighbor2 : neighbor1;
+
+        for (const auto &adjacentEdgeId : vertices[neighborVertexId].getAdjacentEdges())
+        {
+            int adjNeighbor1 = edges[adjacentEdgeId].getVertex1();
+            int adjNeighbor2 = edges[adjacentEdgeId].getVertex2();
+            int adjNeighborVertexId = (adjNeighbor1 == neighborVertexId) ? adjNeighbor2 : adjNeighbor1;
+
+            if (vertices[adjNeighborVertexId].getOwner() != -1)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+bool Board::buildSettlement(int playerId, int vertexId, bool start)
 {
     if (vertexId < 0 || vertexId >= vertices.size())
     {
@@ -116,32 +124,80 @@ bool Board::buildSettlement(int playerId, int vertexId)
 
     if (vertices[vertexId].getOwner() != -1)
     {
-        // std::cout << "Settlement is already " << std::endl;
+        std::cout << "Settlement is already built at this vertex" << std::endl;
         return false;
     }
-    else
+    if (!start)
     {
-        vertices[vertexId].setOwner(playerId);
-        // std::cout << "Settlement is ready " << std::endl;
-        return true;
+        // Check if at least one road leads to the vertex
+        bool hasConnectingRoad = false;
+        for (const auto &edgeId : vertices[vertexId].getAdjacentEdges())
+        {
+            if (edges[edgeId].getOwner() == playerId)
+            {
+                hasConnectingRoad = true;
+                break;
+            }
+        }
+
+        if (!hasConnectingRoad)
+        {
+            std::cout << "No connecting road to build the settlement" << std::endl;
+            return false;
+        }
+
+        // Check if the vertex is at least two road segments away from another settlement
+        if (!isTwoRoadSegmentsAway(vertexId))
+        {
+            std::cout << "Vertex is too close to another settlement" << std::endl;
+            return false;
+        }
     }
+    vertices[vertexId].setOwner(playerId);
+    std::cout << "Settlement is ready" << std::endl;
+    return true;
 }
 
 bool Board::buildRoad(int playerId, int edgeId)
 {
-    int vertex1 = edges[edgeId].getVertex1();
-    int vertex2 = edges[edgeId].getVertex2();
-
     if (edgeId < 0 || edgeId >= edges.size())
     {
         std::cout << "Invalid edge ID" << std::endl;
         return false;
     }
 
-    if ((vertices[vertex1].getOwner() == playerId || vertices[vertex2].getOwner() == playerId) && edges[edgeId].getOwner() == -1)
+    int vertex1 = edges[edgeId].getVertex1();
+    int vertex2 = edges[edgeId].getVertex2();
+
+    bool vertex1OwnedByPlayer = vertices[vertex1].getOwner() == playerId;
+    bool vertex2OwnedByPlayer = vertices[vertex2].getOwner() == playerId;
+
+    bool connectedToPlayerRoad = false;
+
+    for (int adjacentEdgeId : vertices[vertex1].getAdjacentEdges())
+    {
+        if (edges[adjacentEdgeId].getOwner() == playerId)
+        {
+            connectedToPlayerRoad = true;
+            break;
+        }
+    }
+
+    if (!connectedToPlayerRoad)
+    {
+        for (int adjacentEdgeId : vertices[vertex2].getAdjacentEdges())
+        {
+            if (edges[adjacentEdgeId].getOwner() == playerId)
+            {
+                connectedToPlayerRoad = true;
+                break;
+            }
+        }
+    }
+
+    if ((vertex1OwnedByPlayer || vertex2OwnedByPlayer || connectedToPlayerRoad) && edges[edgeId].getOwner() == -1)
     {
         edges[edgeId].setOwner(playerId);
-        // std::cout << "Road placed successfully" << std::endl;
         return true;
     }
     else
@@ -150,6 +206,7 @@ bool Board::buildRoad(int playerId, int edgeId)
         return false;
     }
 }
+
 std::vector<ResourceType> Board::initializeSettlements(int player, int vertex_id)
 {
     std::vector<ResourceType> resources;
@@ -157,7 +214,7 @@ std::vector<ResourceType> Board::initializeSettlements(int player, int vertex_id
     // Place settlement
     Vertex &vertex = vertices[vertex_id];
 
-    if (buildSettlement(player, vertex_id))
+    if (buildSettlement(player, vertex_id, true))
     {
         // Distribute resources from adjacent tiles
         std::vector<int> adjacentTiles = vertex.getAdjacentTiles();
@@ -208,7 +265,7 @@ bool Board::buildCity(int playerId, int vertexId)
         return false;
     }
 
-    if (vertices[vertexId].getOwner() == playerId)
+    if (vertices[vertexId].getOwner() == playerId && vertices[vertexId].isCity() == false)
     {
         vertices[vertexId].upgradeToCity();
         std::cout << "City built successfully" << std::endl;

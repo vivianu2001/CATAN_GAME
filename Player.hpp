@@ -22,7 +22,7 @@ public:
     int getVictoryPoints() const;
 
     // Gameplay functionality
-    bool buildSettlement();
+    bool buildSettlement(int vertexId);
     bool canBuildSettlement() const;
     bool canBuildRoad() const;
     bool canBuildCity() const;
