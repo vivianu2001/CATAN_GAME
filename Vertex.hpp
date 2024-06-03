@@ -28,6 +28,10 @@ public:
     // Build a settlement or city on the vertex and assign it to a player
     void build(BuildingType type, int playerId);
 
+    void upgradeToCity();
+
+    bool isCity() const;
+
     // Get the unique ID of the vertex
     int getId() const;
 

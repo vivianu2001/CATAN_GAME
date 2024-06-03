@@ -15,7 +15,22 @@ void Vertex::build(BuildingType type, int playerId)
     buildingType = type;
     ownerPlayerId = playerId;
 }
+void Vertex::upgradeToCity()
+{
+    if (ownerPlayerId != -1) // Ensure the vertex has an owner before upgrading
+    {
+        buildingType = City;
+    }
+}
 
+bool Vertex::isCity() const
+{
+    if (buildingType == City)
+    {
+        return true;
+    }
+    return false;
+}
 int Vertex::getId() const
 {
     return id;
@@ -46,6 +61,7 @@ void Vertex::setEdge_2(Edge *e2)
 void Vertex::setOwner(int id)
 {
     ownerPlayerId = id;
+    buildingType = Settlement;
 }
 int Vertex::getEdge1() const
 {

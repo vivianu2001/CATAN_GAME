@@ -24,6 +24,10 @@ public:
     // Gameplay functionality
     bool buildSettlement();
     bool canBuildSettlement() const;
+    bool canBuildRoad() const;
+    bool canBuildCity() const;
+    bool buildRoad(int edgeId);
+    bool buildCity(int vertexId);
     // Getter for the player's name
     const std::string &getName() const;
     int getPlayerId() const;
@@ -35,7 +39,13 @@ public:
     void addSettlement(int vertexId);
     int getSettlementCount() const;
     const std::vector<int> &getSettlements() const;
+    void addCity(int vertexId);
+    int getCityCount() const;
+    const std::vector<int> &getCities() const;
+    void buyDevelopmentCard();
     void printStatus() const;
+    void discardResources();           // New method to handle discarding resources
+    int getTotalResourceCount() const; // New method to get the total count of resources
 
 private:
     static int playerCount;                                        // Static variable to keep track of the number of player objects
@@ -46,4 +56,5 @@ private:
     int victoryPoints = 0;
     std::vector<int> roads;
     std::vector<int> settlements; // Total number of victory points
+    std::vector<int> cities;
 };

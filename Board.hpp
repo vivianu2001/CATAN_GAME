@@ -26,6 +26,8 @@ public:
     // Initializes the board with tiles and their respective edges and vertices.
     void distributeResources(int diceRoll, std::vector<Player> &players);
 
+    bool buildCity(int playerId, int vertexId);
+
 private:
     std::vector<Tile> tiles; // Vector containing all the tiles of the board.
     std::vector<Vertex> vertices;

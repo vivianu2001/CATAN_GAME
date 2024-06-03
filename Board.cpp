@@ -187,8 +187,9 @@ void Board::distributeResources(int diceRoll, std::vector<Player> &players)
                     {
                         if (player.getPlayerId() == owner)
                         {
-                            player.addResource(tile.getResource(), 1);
-                            std::cout << "Player " << player.getName() << " received 1 "
+                            player.addResource(tile.getResource(), vertex->isCity() ? 2 : 1);
+                            std::cout << "Player " << player.getName() << " received "
+                                      << (vertex->isCity() ? 2 : 1) << " "
                                       << resourceTypeToString(tile.getResource())
                                       << " from tile " << tile.getNumber() << "." << std::endl;
                         }
@@ -196,5 +197,26 @@ void Board::distributeResources(int diceRoll, std::vector<Player> &players)
                 }
             }
         }
+    }
+}
+
+bool Board::buildCity(int playerId, int vertexId)
+{
+    if (vertexId < 0 || vertexId >= vertices.size())
+    {
+        std::cout << "Invalid vertex ID" << std::endl;
+        return false;
+    }
+
+    if (vertices[vertexId].getOwner() == playerId)
+    {
+        vertices[vertexId].upgradeToCity();
+        std::cout << "City built successfully" << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cout << "Failed to build city" << std::endl;
+        return false;
     }
 }

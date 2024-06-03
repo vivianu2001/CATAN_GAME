@@ -38,3 +38,21 @@ inline std::string resourceTypeToString(ResourceType type)
         return "Unknown";
     }
 }
+inline std::string developmentCardTypeToString(DevelopmentCardType type)
+{
+    switch (type)
+    {
+    case DevelopmentCardType::Knight:
+        return "Knight";
+    case DevelopmentCardType::RoadBuilding:
+        return "Road Building";
+    case DevelopmentCardType::YearOfPlenty:
+        return "Year of Plenty";
+    case DevelopmentCardType::Monopoly:
+        return "Monopoly";
+    case DevelopmentCardType::VictoryPoint:
+        return "Victory Point";
+    default:
+        return "Unknown";
+    }
+}
