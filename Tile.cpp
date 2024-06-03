@@ -16,6 +16,10 @@ const std::vector<Vertex *> &Tile::getVertices() const
 {
     return vertices;
 }
+int Tile::getNumber() const
+{
+    return number;
+}
 
 const std::vector<Edge *> &Tile::getEdges() const
 {

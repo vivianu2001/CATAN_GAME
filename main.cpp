@@ -3,11 +3,15 @@
 #include "Player.hpp"
 #include "Board.hpp"
 #include <set>
+#include "Enums.hpp"
+#include <cstdlib> // For std::rand and std::srand
+#include <ctime>   // For std::time
 
 void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settlement1, int road1, int settlement2, int road2);
-
+int rollDice();
 int main(int argc, char **argv)
 {
+    std::srand(std::time(0)); // Seed random number generator
     std::vector<Player> players;
     std::string name;
 
@@ -26,17 +30,35 @@ int main(int argc, char **argv)
     board.initializeBoard();
 
     // Display a welcome message for each player
-    std::cout << "\nPlayers have joined the game:\n";
-    for (const auto &player : players)
-    {
-        std::cout << "Player: " << player.getName() << std::endl;
-    }
+    std::cout << "\nPlayers have joined the game!";
+
     std::cout << "-----------------------------------\n";
 
     // Initialize each player's settlements and roads
-    initializePlayerSettlementsAndRoads(board, players[0], 3, 4, 7, 8);
-    initializePlayerSettlementsAndRoads(board, players[1], 12, 13, 17, 18);
-    initializePlayerSettlementsAndRoads(board, players[2], 21, 22, 27, 28);
+    initializePlayerSettlementsAndRoads(board, players[0], 3, 6, 28, 36);   // red
+    initializePlayerSettlementsAndRoads(board, players[1], 13, 14, 41, 55); // yellow
+    initializePlayerSettlementsAndRoads(board, players[2], 40, 52, 43, 57); // blue
+
+    while (true)
+    {
+        for (auto &player : players)
+        {
+            std::cout << "\n"
+                      << player.getName() << "'s turn. Press Enter to roll dice.";
+            std::cin.ignore();
+
+            int diceRoll = rollDice();
+            std::cout << player.getName() << " rolled a " << diceRoll << "." << std::endl;
+
+            // Distribute resources based on dice roll
+            board.distributeResources(diceRoll, players);
+
+            // Print player status
+            std::cout << "\nStatus of Player " << player.getName() << " after rolling dice:\n";
+            player.printStatus();
+            std::cout << "-----------------------------------\n";
+        }
+    }
 
     return 0;
 }
@@ -80,4 +102,10 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
     // Print player status
     player.printStatus();
     std::cout << "-----------------------------------\n";
+}
+int rollDice()
+{
+    int die1 = std::rand() % 6 + 1;
+    int die2 = std::rand() % 6 + 1;
+    return die1 + die2;
 }

@@ -7,6 +7,7 @@
 #include "Edge.hpp"
 #include "Player.hpp"
 #include "BoardConfig.hpp"
+#include "Enums.hpp"
 
 class Board
 {
@@ -23,6 +24,7 @@ public:
     // Build road
     bool buildRoad(int playerId, int edgeId);
     // Initializes the board with tiles and their respective edges and vertices.
+    void distributeResources(int diceRoll, std::vector<Player> &players);
 
 private:
     std::vector<Tile> tiles; // Vector containing all the tiles of the board.

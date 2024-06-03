@@ -15,6 +15,7 @@ public:
     const std::vector<Vertex *> &getVertices() const;
     const std::vector<Edge *> &getEdges() const;
     ResourceType getResource() const;
+    int getNumber() const;
 
 private:
     ResourceType resource;

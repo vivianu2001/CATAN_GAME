@@ -21,15 +21,7 @@ void Player::addResource(ResourceType type, int amount)
 {
     resources[type] += amount;
 }
-void Player::printResources() const
-{
-    std::cout << "Player " << name << " resources:" << std::endl;
-    for (const auto &resource : resources)
-    {
-        std::cout << "Resource: " << static_cast<int>(resource.first)
-                  << ", Amount: " << resource.second << std::endl;
-    }
-}
+
 void Player::addRoad(int edgeId)
 {
     roads.push_back(edgeId);
@@ -41,7 +33,7 @@ void Player::printStatus() const
     std::cout << "Resources:" << std::endl;
     for (const auto &resource : resources)
     {
-        std::cout << "Resource: " << static_cast<int>(resource.first)
+        std::cout << "Resource: " << resourceTypeToString(resource.first)
                   << ", Amount: " << resource.second << std::endl;
     }
 
@@ -102,8 +94,7 @@ bool Player::canBuildSettlement() const
     // Simplified check; real game might have specific resource requirements
     return getResourceCount(ResourceType::Wood) > 0 &&
            getResourceCount(ResourceType::Brick) > 0 &&
-           getResourceCount(ResourceType::Wool) > 0 &&
-           getResourceCount(ResourceType::Grain) > 0;
+           getResourceCount(ResourceType::Wool) > 0;
 }
 const std::string &Player::getName() const
 {

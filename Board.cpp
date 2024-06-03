@@ -116,13 +116,13 @@ bool Board::buildSettlement(int playerId, int vertexId)
 
     if (vertices[vertexId].getOwner() != -1)
     {
-        std::cout << "Settlement is already " << std::endl;
+        // std::cout << "Settlement is already " << std::endl;
         return false;
     }
     else
     {
         vertices[vertexId].setOwner(playerId);
-        std::cout << "Settlement is ready " << std::endl;
+        // std::cout << "Settlement is ready " << std::endl;
         return true;
     }
 }
@@ -141,7 +141,7 @@ bool Board::buildRoad(int playerId, int edgeId)
     if ((vertices[vertex1].getOwner() == playerId || vertices[vertex2].getOwner() == playerId) && edges[edgeId].getOwner() == -1)
     {
         edges[edgeId].setOwner(playerId);
-        std::cout << "Road placed successfully" << std::endl;
+        // std::cout << "Road placed successfully" << std::endl;
         return true;
     }
     else
@@ -170,4 +170,31 @@ std::vector<ResourceType> Board::initializeSettlements(int player, int vertex_id
     }
 
     return resources;
+}
+
+void Board::distributeResources(int diceRoll, std::vector<Player> &players)
+{
+    for (const auto &tile : tiles)
+    {
+        if (tile.getNumber() == diceRoll)
+        {
+            for (const auto &vertex : tile.getVertices())
+            {
+                int owner = vertex->getOwner();
+                if (owner != -1)
+                {
+                    for (auto &player : players)
+                    {
+                        if (player.getPlayerId() == owner)
+                        {
+                            player.addResource(tile.getResource(), 1);
+                            std::cout << "Player " << player.getName() << " received 1 "
+                                      << resourceTypeToString(tile.getResource())
+                                      << " from tile " << tile.getNumber() << "." << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

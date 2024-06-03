@@ -4,6 +4,7 @@
 #include <vector>
 #include "Player.hpp"
 #include "Edge.hpp"
+#include "Enums.hpp"
 
 // Forward declaration of Edge class
 class Edge;
