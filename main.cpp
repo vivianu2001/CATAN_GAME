@@ -2,86 +2,82 @@
 #include <vector>
 #include "Player.hpp"
 #include "Board.hpp"
-int runTests();
+#include <set>
+
+void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settlement1, int road1, int settlement2, int road2);
 
 int main(int argc, char **argv)
 {
+    std::vector<Player> players;
+    std::string name;
 
-    std::cout << "\nRunning tests..." << std::endl;
-    int testResult = runTests(); // Run tests and capture the result
+    // Prompt for player names interactively
+    std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
 
-    return testResult; // Return the result of the tests as the program's exit code
-    // std::vector<Player> players;
-    // std::string name;
+    for (int i = 1; i <= 3; ++i)
+    {
+        std::cout << "Enter name for Player " << i << ": ";
+        std::getline(std::cin, name);
+        players.emplace_back(name);
+    }
 
-    // // Prompt for player names interactively
-    // std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
+    // Initialize the game board
+    Board board;
+    board.initializeBoard();
 
-    // for (int i = 1; i <= 3; ++i)
-    // {
-    //     std::cout << "Enter name for Player " << i << ": ";
-    //     std::getline(std::cin, name);
-    //     players.emplace_back(name);
-    // }
+    // Display a welcome message for each player
+    std::cout << "\nPlayers have joined the game:\n";
+    for (const auto &player : players)
+    {
+        std::cout << "Player: " << player.getName() << std::endl;
+    }
+    std::cout << "-----------------------------------\n";
 
-    // // Initialize the game board
-    // Board board;
-    // board.initializeBoard();
+    // Initialize each player's settlements and roads
+    initializePlayerSettlementsAndRoads(board, players[0], 3, 4, 7, 8);
+    initializePlayerSettlementsAndRoads(board, players[1], 12, 13, 17, 18);
+    initializePlayerSettlementsAndRoads(board, players[2], 21, 22, 27, 28);
 
-    // // Display a welcome message for each player
-    // for (const auto &player : players)
-    // {
-    //     std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
-    // }
+    return 0;
+}
 
-    // std::vector<ResourceType> resources = board.initializeSettlements(players[0].getPlayerId(), 3);
-    // for (const auto &resource : resources)
-    // {
-    //     players[0].addResource(resource, 1);
-    // }
-    // players[0].addSettlement(3);
+void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settlement1, int road1, int settlement2, int road2)
+{
+    auto collectResources = [&player](std::vector<ResourceType> resources)
+    {
+        std::set<ResourceType> uniqueResources;
+        for (const auto &resource : resources)
+        {
+            if (uniqueResources.find(resource) == uniqueResources.end() && player.getResourceCount(resource) == 0)
+            {
+                player.addResource(resource, 1);
+                uniqueResources.insert(resource);
+            }
+        }
+    };
 
-    // board.buildRoad(players[0].getPlayerId(), 4);
-    // players[0].addRoad(4);
-    // players[0].printStatus();
-    // return 0;
+    // Initialize first settlement
+    std::vector<ResourceType> resources1 = board.initializeSettlements(player.getPlayerId(), settlement1);
+    collectResources(resources1);
+    player.addSettlement(settlement1);
+    if (board.buildRoad(player.getPlayerId(), road1))
+    {
+        player.addRoad(road1);
+    }
 
-    // // Setup initial game state for each player
-    // for (auto &player : players)
-    // {
-    //     for (int i = 0; i < 2; ++i)
-    //     { // Each player places 2 settlements and 2 roads
-    //         // Assume board.getVertices() and board.getEdges() provide access to these components
-    //         Vertex &settlementVertex = board.getVertices().at(settlementPositions[i]);
-    //         Edge &roadEdge = board.getEdges().at(roadPositions[i]);
+    // Initialize second settlement
+    std::vector<ResourceType> resources2 = board.initializeSettlements(player.getPlayerId(), settlement2);
+    collectResources(resources2);
+    player.addSettlement(settlement2);
+    if (board.buildRoad(player.getPlayerId(), road2))
+    {
+        player.addRoad(road2);
+    }
 
-    //         if (!settlementVertex.isOccupied())
-    //         {
-    //             settlementVertex.build(Vertex::BuildingType::Settlement, player.getId());
-    //             player.addVictoryPoint(1); // Each settlement is worth 1 victory point
+    // Add initial victory points
+    player.addVictoryPoint(2);
 
-    //             // Allocate resources based on adjacent tiles
-    //             for (Tile &tile : board.getAdjacentTiles(settlementVertex))
-    //             {
-    //                 player.addResource(tile.getResourceType(), 1); // Each adjacent tile gives 1 resource
-    //             }
-    //         }
-
-    //         if (!roadEdge.hasRoad())
-    //         {
-    //             roadEdge.buildRoad(player.getId());
-    //         }
-    //     }
-    // }
-
-    // // Announce starting players and their resources
-    // for (const auto &player : players)
-    // {
-    //     std::cout << player.getName() << " starts with " << player.getResourceCount(ResourceType::Wood) << " wood, "
-    //               << player.getResourceCount(ResourceType::Brick) << " brick, and other resources." << std::endl;
-    // }
-
-    // Start game loop or more setup here
-    // For now, just exit
-    // return 0;
+    // Print player status
+    player.printStatus();
+    std::cout << "-----------------------------------\n";
 }
