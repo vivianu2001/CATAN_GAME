@@ -56,3 +56,17 @@ inline std::string developmentCardTypeToString(DevelopmentCardType type)
         return "Unknown";
     }
 }
+inline ResourceType stringToResourceType(const std::string &resource)
+{
+    if (resource == "Wood")
+        return ResourceType::Wood;
+    if (resource == "Brick")
+        return ResourceType::Brick;
+    if (resource == "Wool")
+        return ResourceType::Wool;
+    if (resource == "Iron")
+        return ResourceType::Iron;
+    if (resource == "Oat")
+        return ResourceType::Oat;
+    return ResourceType::None;
+}

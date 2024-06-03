@@ -1,16 +1,15 @@
 #include <iostream>
 #include <vector>
-#include "Player.hpp"
-#include "Board.hpp"
 #include <set>
-#include "Enums.hpp"
 #include <cstdlib> // For std::rand and std::srand
 #include <ctime>   // For std::time
+#include "Player.hpp"
+#include "Board.hpp"
+#include "Enums.hpp"
 
 void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settlement1, int road1, int settlement2, int road2);
 int rollDice();
-void takeTurn(Board &board, Player &player, std::vector<Player> &players);
-bool checkVictory(const Player &player);
+void trade(Player &player1, Player &player2);
 
 int main(int argc, char **argv)
 {
@@ -33,7 +32,7 @@ int main(int argc, char **argv)
     board.initializeBoard();
 
     // Display a welcome message for each player
-    std::cout << "\nPlayers have joined the game!\n";
+    std::cout << "\nPlayers have joined the game!";
     std::cout << "-----------------------------------\n";
 
     // Initialize each player's settlements and roads
@@ -41,18 +40,124 @@ int main(int argc, char **argv)
     initializePlayerSettlementsAndRoads(board, players[1], 13, 14, 41, 55); // yellow
     initializePlayerSettlementsAndRoads(board, players[2], 40, 52, 43, 57); // blue
 
-    // Start the game loop
-    bool gameOver = false;
-    while (!gameOver)
+    while (true)
     {
         for (auto &player : players)
         {
-            takeTurn(board, player, players);
-            if (checkVictory(player))
+            std::cout << "\n"
+                      << player.getName() << "'s turn. Press Enter to roll dice.";
+            std::cin.ignore();
+
+            int diceRoll = rollDice();
+            std::cout << player.getName() << " rolled a " << diceRoll << "." << std::endl;
+
+            // Distribute resources based on dice roll
+            board.distributeResources(diceRoll, players);
+
+            std::string action;
+            while (true)
             {
-                std::cout << player.getName() << " has won the game with " << player.getVictoryPoints() << " victory points!" << std::endl;
-                gameOver = true;
-                break;
+                std::cout << "\nChoose an action: trade, build_road, build_settlement, build_city, buy_development_card, use_development_card, end_turn: ";
+                std::getline(std::cin, action);
+
+                if (action == "trade")
+                {
+                    std::string tradeWith;
+                    std::cout << "Enter the name of the player you want to trade with: ";
+                    std::getline(std::cin, tradeWith);
+
+                    if (tradeWith == player.getName())
+                    {
+                        std::cout << "You cannot trade with yourself." << std::endl;
+                        continue;
+                    }
+
+                    bool playerFound = false;
+                    for (auto &otherPlayer : players)
+                    {
+                        if (otherPlayer.getName() == tradeWith)
+                        {
+                            trade(player, otherPlayer);
+                            playerFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!playerFound)
+                    {
+                        std::cout << "Player not found. Please try again." << std::endl;
+                    }
+                }
+                else if (action == "build_road")
+                {
+                    int edgeId;
+                    std::cout << "Enter edge ID to build road: ";
+                    std::cin >> edgeId;
+                    std::cin.ignore();
+                    if (player.canBuildRoad())
+                    {
+                        if (board.buildRoad(player.getPlayerId(), edgeId))
+                        {
+                            player.addRoad(edgeId);
+                        }
+                    }
+                }
+                else if (action == "build_settlement")
+                {
+                    int vertexId;
+                    std::cout << "Enter vertex ID to build settlement: ";
+                    std::cin >> vertexId;
+                    std::cin.ignore();
+                    if (player.canBuildSettlement())
+                    {
+                        if (board.buildSettlement(player.getPlayerId(), vertexId, false))
+                        {
+                            player.addSettlement(vertexId);
+                        }
+                    }
+                }
+                else if (action == "build_city")
+                {
+                    int vertexId;
+                    std::cout << "Enter vertex ID to build city: ";
+                    std::cin >> vertexId;
+                    std::cin.ignore();
+                    if (player.canBuildCity())
+                    {
+                        if (board.buildCity(player.getPlayerId(), vertexId))
+                        {
+                            player.addCity(vertexId);
+                        }
+                    }
+                }
+                else if (action == "buy_development_card")
+                {
+                    player.buyDevelopmentCard();
+                }
+                else if (action == "use_development_card")
+                {
+                    // Implement logic to use a development card
+                }
+                else if (action == "end_turn")
+                {
+                    break;
+                }
+                else
+                {
+                    std::cout << "Invalid action. Please try again.";
+                }
+            }
+
+            // Print player status
+            std::cout << "\nStatus of Player " << player.getName() << " after turn:\n";
+            player.printStatus();
+            std::cout << "-----------------------------------\n";
+
+            // Check for game over condition
+            if (player.getVictoryPoints() >= 10)
+            {
+                std::cout << "Player " << player.getName() << " has won the game with " << player.getVictoryPoints() << " victory points!" << std::endl;
+                return 0;
             }
         }
     }
@@ -92,6 +197,10 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
     {
         player.addRoad(road2);
     }
+
+    // Add initial victory points
+    player.addVictoryPoint(2);
+
     // Print player status
     player.printStatus();
     std::cout << "-----------------------------------\n";
@@ -104,136 +213,38 @@ int rollDice()
     return die1 + die2;
 }
 
-void takeTurn(Board &board, Player &player, std::vector<Player> &players)
+void trade(Player &player1, Player &player2)
 {
-    std::cout << "\n"
-              << player.getName() << "'s turn. Press Enter to roll dice.";
+    std::string resource1, resource2;
+    int amount1, amount2;
+
+    std::cout << player1.getName() << ", enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
+    std::getline(std::cin, resource1);
+    std::cout << "Enter the amount: ";
+    std::cin >> amount1;
     std::cin.ignore();
 
-    int diceRoll = rollDice();
-    std::cout << player.getName() << " rolled a " << diceRoll << "." << std::endl;
+    std::cout << player2.getName() << ", enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
+    std::getline(std::cin, resource2);
+    std::cout << "Enter the amount: ";
+    std::cin >> amount2;
+    std::cin.ignore();
 
-    // Distribute resources based on dice roll
-    board.distributeResources(diceRoll, players);
+    ResourceType res1 = stringToResourceType(resource1);
+    ResourceType res2 = stringToResourceType(resource2);
 
-    // If the roll total is 7, handle discarding resources
-    if (diceRoll == 7)
+    if (player1.getResourceCount(res1) >= amount1 && player2.getResourceCount(res2) >= amount2)
     {
-        std::cout << "Rolled a 7! Players with more than 7 resource cards must discard half." << std::endl;
-        for (auto &otherPlayer : players)
-        {
-            if (otherPlayer.getTotalResourceCount() > 7)
-            {
-                otherPlayer.discardResources();
-            }
-        }
-    }
+        player1.addResource(res1, -amount1);
+        player2.addResource(res2, -amount2);
 
-    // Player actions
-    std::string action;
-    while (true)
+        player1.addResource(res2, amount2);
+        player2.addResource(res1, amount1);
+
+        std::cout << "Trade successful!" << std::endl;
+    }
+    else
     {
-        std::cout << "\nChoose an action: trade, build_road, build_settlement, build_city, buy_development_card, use_development_card, end_turn: ";
-        std::getline(std::cin, action);
-
-        if (action == "trade")
-        {
-            // Implement trade logic
-            std::cout << "Trading is not yet implemented." << std::endl;
-        }
-        else if (action == "build_road")
-        {
-            int edgeId;
-            std::cout << "Enter edge ID to build road: ";
-            std::cin >> edgeId;
-            std::cin.ignore();
-            if (player.canBuildRoad())
-            {
-                if (board.buildRoad(player.getPlayerId(), edgeId))
-                {
-                    player.buildRoad(edgeId);
-                }
-                else
-                {
-                    std::cout << "Failed to place road on the board. Please choose a valid edge ID." << std::endl;
-                }
-            }
-            else
-            {
-                std::cout << "Not enough resources to build a road." << std::endl;
-            }
-        }
-        else if (action == "build_settlement")
-        {
-            int vertexId;
-            std::cout << "Enter vertex ID to build settlement: ";
-            std::cin >> vertexId;
-            std::cin.ignore();
-            if (player.canBuildSettlement())
-            {
-                if (board.buildSettlement(player.getPlayerId(), vertexId, false))
-                {
-                    player.buildSettlement(vertexId);
-                }
-                else
-                {
-                    std::cout << "Failed to place settlement on the board. Please choose a valid vertex ID." << std::endl;
-                }
-            }
-            else
-            {
-                std::cout << "Not enough resources to build a settlement." << std::endl;
-            }
-        }
-        else if (action == "build_city")
-        {
-            int vertexId;
-            std::cout << "Enter vertex ID to build city: ";
-            std::cin >> vertexId;
-            std::cin.ignore();
-            if (player.canBuildCity())
-            {
-                if (board.buildCity(player.getPlayerId(), vertexId))
-                {
-                    player.buildCity(vertexId);
-                }
-                else
-                {
-                    std::cout << "Failed to upgrade settlement to city. Please choose a valid vertex ID." << std::endl;
-                }
-            }
-            else
-            {
-                std::cout << "Not enough resources to build a city." << std::endl;
-            }
-        }
-        else if (action == "buy_development_card")
-        {
-            player.buyDevelopmentCard();
-        }
-        else if (action == "use_development_card")
-        {
-            // Implement development card usage logic
-            std::cout << "Using development cards is not yet implemented." << std::endl;
-            return; // End the turn after using a development card
-        }
-        else if (action == "end_turn")
-        {
-            break;
-        }
-        else
-        {
-            std::cout << "Invalid action. Please try again.";
-        }
+        std::cout << "Trade failed. Not enough resources." << std::endl;
     }
-
-    // Print player status
-    std::cout << "\nStatus of Player " << player.getName() << " after turn:\n";
-    player.printStatus();
-    std::cout << "-----------------------------------\n";
-}
-
-bool checkVictory(const Player &player)
-{
-    return player.getVictoryPoints() >= 10;
 }
