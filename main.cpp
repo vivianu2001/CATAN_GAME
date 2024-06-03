@@ -2,43 +2,49 @@
 #include <vector>
 #include "Player.hpp"
 #include "Board.hpp"
+int runTests();
 
-int main()
+int main(int argc, char **argv)
 {
-    std::vector<Player> players;
-    std::string name;
 
-    // Prompt for player names interactively
-    std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
+    std::cout << "\nRunning tests..." << std::endl;
+    int testResult = runTests(); // Run tests and capture the result
 
-    for (int i = 1; i <= 3; ++i)
-    {
-        std::cout << "Enter name for Player " << i << ": ";
-        std::getline(std::cin, name);
-        players.emplace_back(name);
-    }
+    return testResult; // Return the result of the tests as the program's exit code
+    // std::vector<Player> players;
+    // std::string name;
 
-    // Initialize the game board
-    Board board;
-    board.initializeBoard();
+    // // Prompt for player names interactively
+    // std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
 
-    // Display a welcome message for each player
-    for (const auto &player : players)
-    {
-        std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
-    }
+    // for (int i = 1; i <= 3; ++i)
+    // {
+    //     std::cout << "Enter name for Player " << i << ": ";
+    //     std::getline(std::cin, name);
+    //     players.emplace_back(name);
+    // }
 
-    std::vector<ResourceType> resources = board.initializeSettlements(players[0].getPlayerId(), 3);
-    for (const auto &resource : resources)
-    {
-        players[0].addResource(resource, 1);
-    }
-    players[0].addSettlement(3);
+    // // Initialize the game board
+    // Board board;
+    // board.initializeBoard();
 
-    board.buildRoad(players[0].getPlayerId(), 4);
-    players[0].addRoad(4);
-    players[0].printStatus();
-    return 0;
+    // // Display a welcome message for each player
+    // for (const auto &player : players)
+    // {
+    //     std::cout << "Player: " << player.getName() << " has joined the game." << std::endl;
+    // }
+
+    // std::vector<ResourceType> resources = board.initializeSettlements(players[0].getPlayerId(), 3);
+    // for (const auto &resource : resources)
+    // {
+    //     players[0].addResource(resource, 1);
+    // }
+    // players[0].addSettlement(3);
+
+    // board.buildRoad(players[0].getPlayerId(), 4);
+    // players[0].addRoad(4);
+    // players[0].printStatus();
+    // return 0;
 
     // // Setup initial game state for each player
     // for (auto &player : players)
@@ -68,14 +74,14 @@ int main()
     //     }
     // }
 
-    // Announce starting players and their resources
-    for (const auto &player : players)
-    {
-        std::cout << player.getName() << " starts with " << player.getResourceCount(ResourceType::Wood) << " wood, "
-                  << player.getResourceCount(ResourceType::Brick) << " brick, and other resources." << std::endl;
-    }
+    // // Announce starting players and their resources
+    // for (const auto &player : players)
+    // {
+    //     std::cout << player.getName() << " starts with " << player.getResourceCount(ResourceType::Wood) << " wood, "
+    //               << player.getResourceCount(ResourceType::Brick) << " brick, and other resources." << std::endl;
+    // }
 
     // Start game loop or more setup here
     // For now, just exit
-    return 0;
+    // return 0;
 }

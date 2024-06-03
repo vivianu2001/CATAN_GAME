@@ -6,12 +6,15 @@
 #include "Vertex.hpp"
 #include "Edge.hpp"
 #include "Player.hpp"
+#include "BoardConfig.hpp"
 
 class Board
 {
 public:
     Board();                                   // Constructor for the board.
     const std::vector<Tile> &getTiles() const; // Returns a reference to the vector of tiles.
+    const std::vector<Vertex> &getVertices() const;
+    const std::vector<Edge> &getEdges() const;
     void initializeBoard();
     // Build settlement
     bool buildSettlement(int playerId, int vertexId);

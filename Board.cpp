@@ -1,7 +1,6 @@
 // board.cpp
 #include "Board.hpp"
 #include <iostream>
-#include "BoardConfig.hpp"
 
 Board::Board()
 {
@@ -99,6 +98,14 @@ const std::vector<Tile> &Board::getTiles() const
 { // Match the declaration: const function returning a const reference.
     return tiles;
 }
+const std::vector<Edge> &Board::getEdges() const
+{ // Match the declaration: const function returning a const reference.
+    return edges;
+}
+const std::vector<Vertex> &Board::getVertices() const
+{ // Match the declaration: const function returning a const reference.
+    return vertices;
+}
 bool Board::buildSettlement(int playerId, int vertexId)
 {
     if (vertexId < 0 || vertexId >= vertices.size())
@@ -131,7 +138,7 @@ bool Board::buildRoad(int playerId, int edgeId)
         return false;
     }
 
-    if (vertices[vertex1].getOwner() == playerId || vertices[vertex2].getOwner() == playerId)
+    if ((vertices[vertex1].getOwner() == playerId || vertices[vertex2].getOwner() == playerId) && edges[edgeId].getOwner() == -1)
     {
         edges[edgeId].setOwner(playerId);
         std::cout << "Road placed successfully" << std::endl;
