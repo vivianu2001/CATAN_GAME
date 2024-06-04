@@ -13,7 +13,7 @@ class Player
 {
 public:
     Player(const std::string &name);
-
+    static void resetPlayerCount();
     int getPlayerId() const;
     const std::string &getName() const;
 

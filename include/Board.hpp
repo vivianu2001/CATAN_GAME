@@ -5,7 +5,6 @@
 #include "Tile.hpp"
 #include "Vertex.hpp"
 #include "Edge.hpp"
-
 #include "BoardConfig.hpp"
 #include "Enums.hpp"
 class Player;
@@ -24,6 +23,7 @@ public:
     bool buildRoad(int playerId, int edgeId);
     void distributeResources(int diceRoll, std::vector<Player> &players);
     bool buildCity(int playerId, int vertexId);
+    void initializePlayerSettlementsAndRoads(Player &player, int settlement1, int road1, int settlement2, int road2);
 
 private:
     std::vector<Tile> tiles; // Vector containing all the tiles of the board.

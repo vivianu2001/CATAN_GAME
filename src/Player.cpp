@@ -365,3 +365,7 @@ void Player::removeDevelopmentCard(DevelopmentCardType card)
         }
     }
 }
+void Player::resetPlayerCount()
+{
+    playerCount = 0;
+}

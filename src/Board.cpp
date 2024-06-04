@@ -1,6 +1,7 @@
 // board.cpp
 #include "Board.hpp"
 #include <iostream>
+#include <set>
 
 Board::Board()
 {
@@ -270,4 +271,38 @@ bool Board::buildCity(int playerId, int vertexId)
         std::cout << "Failed to build city" << std::endl;
         return false;
     }
+}
+void Board::initializePlayerSettlementsAndRoads(Player &player, int settlement1, int road1, int settlement2, int road2)
+{
+    auto collectResources = [&player](std::vector<ResourceType> resources)
+    {
+        std::set<ResourceType> uniqueResources;
+        for (const auto &resource : resources)
+        {
+            if (uniqueResources.find(resource) == uniqueResources.end() && player.getResourceCount(resource) == 0)
+            {
+                player.addResource(resource, 1);
+                uniqueResources.insert(resource);
+            }
+        }
+    };
+
+    std::vector<ResourceType> resources1 = initializeSettlements(player.getPlayerId(), settlement1);
+    collectResources(resources1);
+    player.addSettlement(settlement1);
+    if (buildRoad(player.getPlayerId(), road1))
+    {
+        player.addRoad(road1);
+    }
+
+    std::vector<ResourceType> resources2 = initializeSettlements(player.getPlayerId(), settlement2);
+    collectResources(resources2);
+    player.addSettlement(settlement2);
+    if (buildRoad(player.getPlayerId(), road2))
+    {
+        player.addRoad(road2);
+    }
+
+    player.printStatus();
+    std::cout << "-----------------------------------\n";
 }
