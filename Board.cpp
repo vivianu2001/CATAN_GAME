@@ -96,24 +96,18 @@ bool Board::isTwoRoadSegmentsAway(int vertexId) const
 {
     for (const auto &edgeId : vertices[vertexId].getAdjacentEdges())
     {
-        int neighbor1 = edges[edgeId].getVertex1();
+        int neighbor1 = edges[edgeId].getVertex1(); //
         int neighbor2 = edges[edgeId].getVertex2();
         int neighborVertexId = (neighbor1 == vertexId) ? neighbor2 : neighbor1;
 
-        for (const auto &adjacentEdgeId : vertices[neighborVertexId].getAdjacentEdges())
+        if (vertices[neighborVertexId].getOwner() != -1)
         {
-            int adjNeighbor1 = edges[adjacentEdgeId].getVertex1();
-            int adjNeighbor2 = edges[adjacentEdgeId].getVertex2();
-            int adjNeighborVertexId = (adjNeighbor1 == neighborVertexId) ? adjNeighbor2 : adjNeighbor1;
-
-            if (vertices[adjNeighborVertexId].getOwner() != -1)
-            {
-                return false;
-            }
+            return false;
         }
     }
     return true;
 }
+
 bool Board::buildSettlement(int playerId, int vertexId, bool start)
 {
     if (vertexId < 0 || vertexId >= vertices.size())

@@ -2,21 +2,17 @@
 #define PROMOTIONCARD_HPP
 
 #include "DevelopmentCard.hpp"
+#include "Enums.hpp"
 
 class PromotionCard : public DevelopmentCard
 {
 public:
-    enum Type
-    {
-        MONOPOLY,
-        BUILDING_ROADS,
-        YEAR_OF_PLENTY
-    };
-    PromotionCard(Type type) : type(type) {}
+    PromotionCard(PromotionCardType type);
     void useCard(Player &player, std::vector<Player> &players, Board &board) override;
+    PromotionCardType getType() const;
 
 private:
-    Type type;
+    PromotionCardType type;
 };
 
 #endif // PROMOTIONCARD_HPP

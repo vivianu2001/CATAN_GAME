@@ -115,6 +115,34 @@ void Player::printStatus() const
     {
         std::cout << "Vertex ID: " << city << std::endl;
     }
+    std::cout << "Development Cards:" << std::endl;
+    for (const auto &card : developmentCards)
+    {
+        if (dynamic_cast<PromotionCard *>(card))
+        {
+            PromotionCard *promotionCard = static_cast<PromotionCard *>(card);
+            switch (promotionCard->getType())
+            {
+            case PromotionCardType::MONOPOLY:
+                std::cout << "Monopoly" << std::endl;
+                break;
+            case PromotionCardType::BUILDING_ROADS:
+                std::cout << "Building Roads" << std::endl;
+                break;
+            case PromotionCardType::YEAR_OF_PLENTY:
+                std::cout << "Year of Plenty" << std::endl;
+                break;
+            }
+        }
+        else if (dynamic_cast<KnightCard *>(card))
+        {
+            std::cout << "Knight" << std::endl;
+        }
+        else if (dynamic_cast<VictoryPointCard *>(card))
+        {
+            std::cout << "Victory Point" << std::endl;
+        }
+    }
     std::cout << "Victory Points: " << victoryPoints << std::endl;
 }
 
@@ -134,13 +162,13 @@ void Player::buyDevelopmentCard()
         switch (cardType)
         {
         case 0:
-            card = new PromotionCard(PromotionCard::MONOPOLY);
+            card = new PromotionCard(PromotionCardType::MONOPOLY);
             break;
         case 1:
-            card = new PromotionCard(PromotionCard::BUILDING_ROADS);
+            card = new PromotionCard(PromotionCardType::BUILDING_ROADS);
             break;
         case 2:
-            card = new PromotionCard(PromotionCard::YEAR_OF_PLENTY);
+            card = new PromotionCard(PromotionCardType::YEAR_OF_PLENTY);
             break;
         case 3:
             card = new KnightCard();
@@ -264,4 +292,76 @@ bool Player::canBuildCity() const
 {
     return getResourceCount(ResourceType::Iron) >= 3 &&
            getResourceCount(ResourceType::Oat) >= 2;
+}
+bool Player::hasDevelopmentCard(DevelopmentCardType card) const
+{
+    for (const auto &devCard : developmentCards)
+    {
+        if (dynamic_cast<KnightCard *>(devCard) && card == DevelopmentCardType::Knight)
+        {
+            return true;
+        }
+        if (auto promotionCard = dynamic_cast<PromotionCard *>(devCard))
+        {
+            if (card == toDevelopmentCardType(promotionCard->getType()))
+            {
+                return true;
+            }
+        }
+        if (dynamic_cast<VictoryPointCard *>(devCard) && card == DevelopmentCardType::VictoryPoint)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Player::addDevelopmentCard(DevelopmentCardType card)
+{
+    switch (card)
+    {
+    case DevelopmentCardType::Knight:
+        developmentCards.push_back(new KnightCard());
+        break;
+    case DevelopmentCardType::Monopoly:
+        developmentCards.push_back(new PromotionCard(PromotionCardType::MONOPOLY));
+        break;
+    case DevelopmentCardType::RoadBuilding:
+        developmentCards.push_back(new PromotionCard(PromotionCardType::BUILDING_ROADS));
+        break;
+    case DevelopmentCardType::YearOfPlenty:
+        developmentCards.push_back(new PromotionCard(PromotionCardType::YEAR_OF_PLENTY));
+        break;
+    case DevelopmentCardType::VictoryPoint:
+        developmentCards.push_back(new VictoryPointCard());
+        break;
+    }
+}
+
+void Player::removeDevelopmentCard(DevelopmentCardType card)
+{
+    for (auto it = developmentCards.begin(); it != developmentCards.end(); ++it)
+    {
+        if (dynamic_cast<KnightCard *>(*it) && card == DevelopmentCardType::Knight)
+        {
+            delete *it;
+            developmentCards.erase(it);
+            return;
+        }
+        if (auto promotionCard = dynamic_cast<PromotionCard *>(*it))
+        {
+            if (card == toDevelopmentCardType(promotionCard->getType()))
+            {
+                delete *it;
+                developmentCards.erase(it);
+                return;
+            }
+        }
+        if (dynamic_cast<VictoryPointCard *>(*it) && card == DevelopmentCardType::VictoryPoint)
+        {
+            delete *it;
+            developmentCards.erase(it);
+            return;
+        }
+    }
 }

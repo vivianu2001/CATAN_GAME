@@ -1,14 +1,30 @@
 #include "PromotionCard.hpp"
+#include <iostream>
 #include "Player.hpp"
 #include "Board.hpp"
-#include <iostream>
+PromotionCard::PromotionCard(PromotionCardType type) : type(type)
+{
+    switch (type)
+    {
+    case PromotionCardType::MONOPOLY:
+        std::cout << "Monopoly card created" << std::endl;
+        break;
+    case PromotionCardType::BUILDING_ROADS:
+        std::cout << "Building Roads card created" << std::endl;
+        break;
+    case PromotionCardType::YEAR_OF_PLENTY:
+        std::cout << "Year of Plenty card created" << std::endl;
+        break;
+    }
+}
 
 void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board &board)
 {
     switch (type)
     {
-    case MONOPOLY:
+    case PromotionCardType::MONOPOLY:
     {
+
         std::string resource;
         std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
         std::getline(std::cin, resource);
@@ -25,7 +41,8 @@ void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board 
         }
         break;
     }
-    case BUILDING_ROADS:
+
+    case PromotionCardType::BUILDING_ROADS:
     {
         for (int i = 0; i < 2; ++i)
         {
@@ -40,17 +57,25 @@ void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board 
         }
         break;
     }
-    case YEAR_OF_PLENTY:
+
+    case PromotionCardType::YEAR_OF_PLENTY:
     {
         for (int i = 0; i < 2; ++i)
         {
-            std::string resource;
-            std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
-            std::getline(std::cin, resource);
-            ResourceType resType = stringToResourceType(resource);
-            player.addResource(resType, 1);
+            int edgeId;
+            std::cout << "Enter edge ID to build road: ";
+            std::cin >> edgeId;
+            std::cin.ignore();
+            if (board.buildRoad(player.getPlayerId(), edgeId))
+            {
+                player.addRoad(edgeId);
+            }
         }
         break;
     }
     }
+}
+PromotionCardType PromotionCard::getType() const
+{
+    return type;
 }

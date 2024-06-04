@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ENUMS_HPP
+#define ENUMS_HPP
 
 enum class ResourceType
 {
@@ -18,6 +19,7 @@ enum class DevelopmentCardType
     Monopoly,
     VictoryPoint
 };
+
 inline std::string resourceTypeToString(ResourceType type)
 {
     switch (type)
@@ -38,6 +40,7 @@ inline std::string resourceTypeToString(ResourceType type)
         return "Unknown";
     }
 }
+
 inline std::string developmentCardTypeToString(DevelopmentCardType type)
 {
     switch (type)
@@ -56,6 +59,7 @@ inline std::string developmentCardTypeToString(DevelopmentCardType type)
         return "Unknown";
     }
 }
+
 inline ResourceType stringToResourceType(const std::string &resource)
 {
     if (resource == "Wood")
@@ -70,6 +74,7 @@ inline ResourceType stringToResourceType(const std::string &resource)
         return ResourceType::Oat;
     return ResourceType::None;
 }
+
 inline DevelopmentCardType stringToDevelopmentCardType(const std::string &card)
 {
     if (card == "Knight")
@@ -84,3 +89,27 @@ inline DevelopmentCardType stringToDevelopmentCardType(const std::string &card)
         return DevelopmentCardType::VictoryPoint;
     throw std::invalid_argument("Unknown development card type");
 }
+
+enum class PromotionCardType
+{
+    MONOPOLY,
+    BUILDING_ROADS,
+    YEAR_OF_PLENTY
+};
+
+inline DevelopmentCardType toDevelopmentCardType(PromotionCardType type)
+{
+    switch (type)
+    {
+    case PromotionCardType::MONOPOLY:
+        return DevelopmentCardType::Monopoly;
+    case PromotionCardType::BUILDING_ROADS:
+        return DevelopmentCardType::RoadBuilding;
+    case PromotionCardType::YEAR_OF_PLENTY:
+        return DevelopmentCardType::YearOfPlenty;
+    default:
+        throw std::invalid_argument("Invalid PromotionCardType");
+    }
+}
+
+#endif // ENUMS_HPP

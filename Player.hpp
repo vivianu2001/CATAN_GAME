@@ -48,6 +48,9 @@ public:
 
     bool buildCity(int vertexId);
     bool canBuildCity() const;
+    bool hasDevelopmentCard(DevelopmentCardType card) const;
+    void addDevelopmentCard(DevelopmentCardType card);
+    void removeDevelopmentCard(DevelopmentCardType card);
     void playKnightCard(std::vector<Player> &players);
 
     void checkAndUpdateLargestArmy(std::vector<Player> &players);

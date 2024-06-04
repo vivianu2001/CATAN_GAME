@@ -6,6 +6,7 @@
 class KnightCard : public DevelopmentCard
 {
 public:
+    KnightCard(); // Declare the constructor
     void useCard(Player &player, std::vector<Player> &players, Board &board) override;
 };
 
