@@ -11,6 +11,10 @@ Player *Player::largestArmyPlayer = nullptr;
 Player::Player(const std::string &name) : knightCount(0), hasLargestArmy(false), name(name), victoryPoints(0)
 {
     playerId = ++playerCount;
+    for (ResourceType type : {ResourceType::Wood, ResourceType::Brick, ResourceType::Wool, ResourceType::Iron, ResourceType::Oat})
+    {
+        resources[type] = 0;
+    }
 }
 
 int Player::getPlayerId() const

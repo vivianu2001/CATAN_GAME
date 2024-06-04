@@ -85,48 +85,49 @@ TEST_CASE("Board distributeResources")
     Board board;
     board.initializeBoard();
 
-    Player player1("Player1");
-    Player player2("Player2");
-    std::vector<Player> players = {player1, player2};
+    // Using pointers to store references to Player objects
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
 
     // Distribute resources for dice roll 6
-    board.distributeResources(6, players);
 
     // Check if Player1 received 1 Wood
-    CHECK(player1.getResourceCount(ResourceType::Wood) == 0);
-    CHECK(player1.getResourceCount(ResourceType::Oat) == 0);
-    CHECK(player1.getResourceCount(ResourceType::Wool) == 0);
-    CHECK(player1.getResourceCount(ResourceType::Iron) == 0);
-    CHECK(player1.getResourceCount(ResourceType::Brick) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 0);
 
-    CHECK(player2.getResourceCount(ResourceType::Wood) == 0);
-    CHECK(player2.getResourceCount(ResourceType::Oat) == 0);
-    CHECK(player2.getResourceCount(ResourceType::Wool) == 0);
-    CHECK(player2.getResourceCount(ResourceType::Iron) == 0);
-    CHECK(player2.getResourceCount(ResourceType::Brick) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Iron) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Brick) == 0);
 
-    board.initializePlayerSettlementsAndRoads(player2, 13, 14, 41, 55);
+    board.initializePlayerSettlementsAndRoads(players[0], 13, 14, 41, 55);
+    board.initializePlayerSettlementsAndRoads(players[1], 15, 18, 48, 64);
 
-    // CHECK(board.buildSettlement(player1.getPlayerId(), 3, true) == true);
-    // CHECK(board.buildRoad(player1.getPlayerId(), 6) == true);
-    // CHECK(board.buildSettlement(player1.getPlayerId(), 28, true) == true);
-    // CHECK(board.buildRoad(player1.getPlayerId(), 36) == true);
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
 
-    // CHECK(board.buildSettlement(player2.getPlayerId(), 13, true) == true);
-    // CHECK(board.buildRoad(player2.getPlayerId(), 14) == true);
-    // CHECK(board.buildSettlement(player2.getPlayerId(), 41, true) == true);
-    // CHECK(board.buildRoad(player2.getPlayerId(), 55) == true);
+    CHECK(players[1].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Oat) == 1);
+    CHECK(players[1].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Iron) == 1);
+    CHECK(players[1].getResourceCount(ResourceType::Brick) == 1);
 
-    // board.distributeResources(9, players);
-    // CHECK(player1.getResourceCount(ResourceType::Wood) == 0);
-    // CHECK(player1.getResourceCount(ResourceType::Oat) == 0);
-    // CHECK(player1.getResourceCount(ResourceType::Wool) == 0);
-    // CHECK(player1.getResourceCount(ResourceType::Iron) == 0);
-    // CHECK(player1.getResourceCount(ResourceType::Brick) == 0);
+    board.distributeResources(9, players);
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 2);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
 
-    // CHECK(player2.getResourceCount(ResourceType::Wood) == 0);
-    // CHECK(player2.getResourceCount(ResourceType::Oat) == 0);
-    // CHECK(player2.getResourceCount(ResourceType::Wool) == 0);
-    // CHECK(player2.getResourceCount(ResourceType::Iron) == 0);
-    // CHECK(player2.getResourceCount(ResourceType::Brick) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Oat) == 2);
+    CHECK(players[1].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Iron) == 1);
+    CHECK(players[1].getResourceCount(ResourceType::Brick) == 1);
 }
