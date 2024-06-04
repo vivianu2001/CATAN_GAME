@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <cstdlib> // For std::rand and std::srand
-#include <ctime>   // For std::time
+#include <cstdlib>
+#include <ctime>
 #include "Player.hpp"
 #include "Board.hpp"
 #include "Enums.hpp"
@@ -13,13 +13,11 @@ void trade(Player &player1, Player &player2);
 
 int main(int argc, char **argv)
 {
-    std::srand(std::time(0)); // Seed random number generator
+    std::srand(std::time(0));
     std::vector<Player> players;
     std::string name;
 
-    // Prompt for player names interactively
     std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
-
     for (int i = 1; i <= 3; ++i)
     {
         std::cout << "Enter name for Player " << i << ": ";
@@ -27,18 +25,14 @@ int main(int argc, char **argv)
         players.emplace_back(name);
     }
 
-    // Initialize the game board
     Board board;
     board.initializeBoard();
 
-    // Display a welcome message for each player
-    std::cout << "\nPlayers have joined the game!";
-    std::cout << "-----------------------------------\n";
+    std::cout << "\nPlayers have joined the game!\n-----------------------------------\n";
 
-    // Initialize each player's settlements and roads
-    initializePlayerSettlementsAndRoads(board, players[0], 3, 6, 28, 36);   // red
-    initializePlayerSettlementsAndRoads(board, players[1], 13, 14, 41, 55); // yellow
-    initializePlayerSettlementsAndRoads(board, players[2], 40, 52, 43, 57); // blue
+    initializePlayerSettlementsAndRoads(board, players[0], 3, 6, 28, 36);
+    initializePlayerSettlementsAndRoads(board, players[1], 13, 14, 41, 55);
+    initializePlayerSettlementsAndRoads(board, players[2], 40, 52, 43, 57);
 
     while (true)
     {
@@ -51,7 +45,6 @@ int main(int argc, char **argv)
             int diceRoll = rollDice();
             std::cout << player.getName() << " rolled a " << diceRoll << "." << std::endl;
 
-            // Distribute resources based on dice roll
             board.distributeResources(diceRoll, players);
 
             std::string action;
@@ -94,12 +87,9 @@ int main(int argc, char **argv)
                     std::cout << "Enter edge ID to build road: ";
                     std::cin >> edgeId;
                     std::cin.ignore();
-                    if (player.canBuildRoad())
+                    if (player.canBuildRoad() && board.buildRoad(player.getPlayerId(), edgeId))
                     {
-                        if (board.buildRoad(player.getPlayerId(), edgeId))
-                        {
-                            player.addRoad(edgeId);
-                        }
+                        player.buildRoad(edgeId);
                     }
                 }
                 else if (action == "build_settlement")
@@ -108,12 +98,9 @@ int main(int argc, char **argv)
                     std::cout << "Enter vertex ID to build settlement: ";
                     std::cin >> vertexId;
                     std::cin.ignore();
-                    if (player.canBuildSettlement())
+                    if (player.canBuildSettlement() && board.buildSettlement(player.getPlayerId(), vertexId, false))
                     {
-                        if (board.buildSettlement(player.getPlayerId(), vertexId, false))
-                        {
-                            player.addSettlement(vertexId);
-                        }
+                        player.buildSettlement(vertexId);
                     }
                 }
                 else if (action == "build_city")
@@ -122,12 +109,9 @@ int main(int argc, char **argv)
                     std::cout << "Enter vertex ID to build city: ";
                     std::cin >> vertexId;
                     std::cin.ignore();
-                    if (player.canBuildCity())
+                    if (player.canBuildCity() && board.buildCity(player.getPlayerId(), vertexId))
                     {
-                        if (board.buildCity(player.getPlayerId(), vertexId))
-                        {
-                            player.addCity(vertexId);
-                        }
+                        player.buildCity(vertexId);
                     }
                 }
                 else if (action == "buy_development_card")
@@ -136,7 +120,11 @@ int main(int argc, char **argv)
                 }
                 else if (action == "use_development_card")
                 {
-                    player.useDevelopmentCard(players, board);
+                    int cardIndex;
+                    std::cout << "Enter the index of the development card to use: ";
+                    std::cin >> cardIndex;
+                    std::cin.ignore();
+                    player.useDevelopmentCard(cardIndex, players, board);
                 }
                 else if (action == "end_turn")
                 {
@@ -148,12 +136,10 @@ int main(int argc, char **argv)
                 }
             }
 
-            // Print player status
             std::cout << "\nStatus of Player " << player.getName() << " after turn:\n";
             player.printStatus();
             std::cout << "-----------------------------------\n";
 
-            // Check for game over condition
             if (player.getVictoryPoints() >= 10)
             {
                 std::cout << "Player " << player.getName() << " has won the game with " << player.getVictoryPoints() << " victory points!" << std::endl;
@@ -180,7 +166,6 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
         }
     };
 
-    // Initialize first settlement
     std::vector<ResourceType> resources1 = board.initializeSettlements(player.getPlayerId(), settlement1);
     collectResources(resources1);
     player.addSettlement(settlement1);
@@ -189,7 +174,6 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
         player.addRoad(road1);
     }
 
-    // Initialize second settlement
     std::vector<ResourceType> resources2 = board.initializeSettlements(player.getPlayerId(), settlement2);
     collectResources(resources2);
     player.addSettlement(settlement2);
@@ -198,10 +182,6 @@ void initializePlayerSettlementsAndRoads(Board &board, Player &player, int settl
         player.addRoad(road2);
     }
 
-    // Add initial victory points
-    player.addVictoryPoint(2);
-
-    // Print player status
     player.printStatus();
     std::cout << "-----------------------------------\n";
 }

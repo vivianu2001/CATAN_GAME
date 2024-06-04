@@ -1,66 +1,70 @@
-#pragma once
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
+
+#include <vector>
+#include <map>
 #include <string>
-#include <unordered_map>
+#include "DevelopmentCard.hpp"
 #include "Enums.hpp"
-#include <iostream>
+
 class Board;
+
 class Player
 {
 public:
-    // Constructor that takes a player's name
-    explicit Player(const std::string &name);
+    Player(const std::string &name);
 
-    // Methods to manage resources
-    void addResource(ResourceType type, int amount);
-    int getResourceCount(ResourceType type) const;
-
-    // Methods to manage development cards
-    void addDevelopmentCard(DevelopmentCardType card);
-    int getDevelopmentCardCount(DevelopmentCardType card) const;
-
-    // Methods to manage victory points
-    void addVictoryPoint(int points);
-    int getVictoryPoints() const;
-
-    // Gameplay functionality
-    bool buildSettlement(int vertexId);
-    bool canBuildSettlement() const;
-    bool canBuildRoad() const;
-    bool canBuildCity() const;
-    bool buildRoad(int edgeId);
-    bool buildCity(int vertexId);
-    // Getter for the player's name
-    const std::string &getName() const;
     int getPlayerId() const;
-    void printResources() const; // Add this lin
+    const std::string &getName() const;
+
+    int getResourceCount(ResourceType type) const;
+    void addResource(ResourceType type, int amount);
+
     void addRoad(int edgeId);
-    int getRoadCount() const;
     const std::vector<int> &getRoads() const;
+    int getRoadCount() const;
 
     void addSettlement(int vertexId);
-    int getSettlementCount() const;
     const std::vector<int> &getSettlements() const;
+    int getSettlementCount() const;
+
     void addCity(int vertexId);
-    int getCityCount() const;
     const std::vector<int> &getCities() const;
+    int getCityCount() const;
+
+    int getVictoryPoints() const;
+    void addVictoryPoint(int points);
+
     void buyDevelopmentCard();
+    void useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board);
+
     void printStatus() const;
-    void discardResources();           // New method to handle discarding resources
-    int getTotalResourceCount() const; // New method to get the total count of resources
-    void useDevelopmentCard(std::vector<Player> &players, Board &board);
-    void useMonopoly(std::vector<Player> &players);
-    void useRoadBuilding(Board &board);
-    void useYearOfPlenty();
-    void useKnight();
+
+    bool buildSettlement(int vertexId);
+    bool canBuildSettlement() const;
+
+    bool buildRoad(int edgeId);
+    bool canBuildRoad() const;
+
+    bool buildCity(int vertexId);
+    bool canBuildCity() const;
+    void playKnightCard(std::vector<Player> &players);
+
+    void checkAndUpdateLargestArmy(std::vector<Player> &players);
 
 private:
-    static int playerCount;                                        // Static variable to keep track of the number of player objects
-    int playerId;                                                  // Player ID
-    std::string name;                                              // Player's name
-    std::unordered_map<ResourceType, int> resources;               // Map of resources and their counts
-    std::unordered_map<DevelopmentCardType, int> developmentCards; // Map of development cards and their counts
-    int victoryPoints = 0;
+    static int playerCount;
+    static Player *largestArmyPlayer;
+    int knightCount;
+    bool hasLargestArmy;
+    int playerId;
+    std::string name;
+    int victoryPoints;
+    std::map<ResourceType, int> resources;
     std::vector<int> roads;
-    std::vector<int> settlements; // Total number of victory points
+    std::vector<int> settlements;
     std::vector<int> cities;
+    std::vector<DevelopmentCard *> developmentCards; // Vector of pointers to DevelopmentCard
 };
+
+#endif // PLAYER_HPP

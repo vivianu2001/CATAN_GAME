@@ -1,11 +1,14 @@
 #include "Player.hpp"
 #include <iostream>
 #include "Board.hpp"
+#include "PromotionCard.hpp"
+#include "KnightCard.hpp"
+#include "VictoryPointCard.hpp"
 
 int Player::playerCount = 0;
+Player *Player::largestArmyPlayer = nullptr;
 
-// Constructor that initializes the player with a name
-Player::Player(const std::string &name) : name(name), victoryPoints(0)
+Player::Player(const std::string &name) : knightCount(0), hasLargestArmy(false), name(name), victoryPoints(0)
 {
     playerId = playerCount++;
 }
@@ -15,13 +18,17 @@ int Player::getPlayerId() const
     return playerId;
 }
 
+const std::string &Player::getName() const
+{
+    return name;
+}
+
 int Player::getResourceCount(ResourceType type) const
 {
     auto it = resources.find(type);
     return it != resources.end() ? it->second : 0;
 }
 
-// Add resources to the player's inventory
 void Player::addResource(ResourceType type, int amount)
 {
     resources[type] += amount;
@@ -32,118 +39,9 @@ void Player::addRoad(int edgeId)
     roads.push_back(edgeId);
 }
 
-void Player::printStatus() const
+const std::vector<int> &Player::getRoads() const
 {
-    std::cout << "Player " << name << " status:" << std::endl;
-
-    std::cout << "Resources:" << std::endl;
-    for (const auto &resource : resources)
-    {
-        std::cout << "Resource: " << resourceTypeToString(resource.first)
-                  << ", Amount: " << resource.second << std::endl;
-    }
-
-    std::cout << "Roads:" << std::endl;
-    for (const auto &road : roads)
-    {
-        std::cout << "Edge ID: " << road << std::endl;
-    }
-
-    std::cout << "Settlements:" << std::endl;
-    for (const auto &settlement : settlements)
-    {
-        std::cout << "Vertex ID: " << settlement << std::endl;
-    }
-
-    std::cout << "Cities:" << std::endl;
-    for (const auto &city : cities)
-    {
-        std::cout << "Vertex ID: " << city << std::endl;
-    }
-
-    std::cout << "Victory Points: " << victoryPoints << std::endl;
-}
-
-// Add a development card to the player's inventory
-void Player::addDevelopmentCard(DevelopmentCardType card)
-{
-    developmentCards[card]++;
-}
-
-// Increment the player's victory points
-void Player::addVictoryPoint(int points)
-{
-    victoryPoints += points;
-}
-
-// Retrieve the player's total victory points
-int Player::getVictoryPoints() const
-{
-    return victoryPoints;
-}
-
-// Example gameplay logic for building a settlement
-bool Player::buildSettlement(int vertexId)
-{
-    resources[ResourceType::Wood]--;
-    resources[ResourceType::Brick]--;
-    resources[ResourceType::Wool]--;
-    resources[ResourceType::Oat]--;
-    addSettlement(vertexId);
-    return true;
-}
-
-// Check if the player has sufficient resources to build a settlement
-bool Player::canBuildSettlement() const
-{
-    return getResourceCount(ResourceType::Wood) > 0 &&
-           getResourceCount(ResourceType::Brick) > 0 &&
-           getResourceCount(ResourceType::Wool) > 0 &&
-           getResourceCount(ResourceType::Oat) > 0;
-}
-
-bool Player::canBuildRoad() const
-{
-    return getResourceCount(ResourceType::Wood) > 0 &&
-           getResourceCount(ResourceType::Brick) > 0;
-}
-
-bool Player::canBuildCity() const
-{
-    return getResourceCount(ResourceType::Iron) >= 3 &&
-           getResourceCount(ResourceType::Oat) >= 2;
-}
-
-bool Player::buildRoad(int edgeId)
-{
-    // Deduct resource costs
-    resources[ResourceType::Wood]--;
-    resources[ResourceType::Brick]--;
-    addRoad(edgeId);
-    return true;
-}
-
-bool Player::buildCity(int vertexId)
-{
-    // Deduct resource costs
-    resources[ResourceType::Iron] -= 3;
-    resources[ResourceType::Oat] -= 2;
-
-    // Remove settlement if it exists
-    auto it = std::find(settlements.begin(), settlements.end(), vertexId);
-    if (it != settlements.end())
-    {
-        settlements.erase(it);
-        addVictoryPoint(-1); // Remove the settlement point
-    }
-
-    addCity(vertexId);
-    return true;
-}
-
-const std::string &Player::getName() const
-{
-    return name;
+    return roads;
 }
 
 int Player::getRoadCount() const
@@ -151,53 +49,73 @@ int Player::getRoadCount() const
     return roads.size();
 }
 
-// Retrieve the player's roads
-const std::vector<int> &Player::getRoads() const
-{
-    return roads;
-}
-
-// Add a settlement to the player's inventory
 void Player::addSettlement(int vertexId)
 {
     settlements.push_back(vertexId);
     addVictoryPoint(1);
 }
 
-// Retrieve the player's total settlement count
-int Player::getSettlementCount() const
-{
-    return settlements.size();
-}
-
-// Retrieve the player's settlements
 const std::vector<int> &Player::getSettlements() const
 {
     return settlements;
 }
 
-// Add a city to the player's inventory
+int Player::getSettlementCount() const
+{
+    return settlements.size();
+}
+
 void Player::addCity(int vertexId)
 {
     cities.push_back(vertexId);
     addVictoryPoint(1);
 }
 
-// Retrieve the player's total city count
+const std::vector<int> &Player::getCities() const
+{
+    return cities;
+}
+
 int Player::getCityCount() const
 {
     return cities.size();
 }
 
-// Retrieve the player's cities
-const std::vector<int> &Player::getCities() const
+int Player::getVictoryPoints() const
 {
-    return cities;
+    return victoryPoints;
 }
-int Player::getDevelopmentCardCount(DevelopmentCardType card) const
+
+void Player::addVictoryPoint(int points)
 {
-    auto it = developmentCards.find(card);
-    return it != developmentCards.end() ? it->second : 0;
+    victoryPoints += points;
+}
+
+void Player::printStatus() const
+{
+    std::cout << "Player " << name << " status:" << std::endl;
+    std::cout << "Resources:" << std::endl;
+    for (const auto &resource : resources)
+    {
+        std::cout << "Resource: " << resourceTypeToString(resource.first)
+                  << ", Amount: " << resource.second << std::endl;
+    }
+    std::cout << "Roads:" << std::endl;
+    for (const auto &road : roads)
+    {
+        std::cout << "Edge ID: " << road << std::endl;
+    }
+    std::cout << "Settlements:" << std::endl;
+    for (const auto &settlement : settlements)
+    {
+        std::cout << "Vertex ID: " << settlement << std::endl;
+    }
+    std::cout << "Cities:" << std::endl;
+    for (const auto &city : cities)
+    {
+        std::cout << "Vertex ID: " << city << std::endl;
+    }
+    std::cout << "Victory Points: " << victoryPoints << std::endl;
 }
 
 void Player::buyDevelopmentCard()
@@ -211,132 +129,139 @@ void Player::buyDevelopmentCard()
         resources[ResourceType::Oat]--;
 
         // Randomly assign a development card
-        DevelopmentCardType card = static_cast<DevelopmentCardType>(std::rand() % 5);
-        addDevelopmentCard(card);
-        std::cout << "Player " << name << " bought a development card: " << developmentCardTypeToString(card) << std::endl;
+        int cardType = std::rand() % 5;
+        DevelopmentCard *card;
+        switch (cardType)
+        {
+        case 0:
+            card = new PromotionCard(PromotionCard::MONOPOLY);
+            break;
+        case 1:
+            card = new PromotionCard(PromotionCard::BUILDING_ROADS);
+            break;
+        case 2:
+            card = new PromotionCard(PromotionCard::YEAR_OF_PLENTY);
+            break;
+        case 3:
+            card = new KnightCard();
+            break;
+        case 4:
+            card = new VictoryPointCard();
+            break;
+        default:
+            card = nullptr; // Should not happen
+            break;
+        }
+        if (card)
+        {
+            developmentCards.push_back(card);
+            std::cout << "Player " << name << " bought a development card." << std::endl;
+        }
     }
     else
     {
         std::cout << "Not enough resources to buy a development card" << std::endl;
     }
 }
-void Player::discardResources()
+
+void Player::useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board)
 {
-    int totalResources = getTotalResourceCount();
-    int discardCount = totalResources / 2;
-
-    std::vector<std::pair<ResourceType, int>> resourceList(resources.begin(), resources.end());
-    std::random_shuffle(resourceList.begin(), resourceList.end());
-
-    for (auto &resource : resourceList)
+    if (cardIndex < developmentCards.size())
     {
-        int discard = std::min(discardCount, resource.second);
-        resources[resource.first] -= discard;
-        discardCount -= discard;
-        if (discardCount <= 0)
-            break;
-    }
-}
-
-int Player::getTotalResourceCount() const
-{
-    int total = 0;
-    for (const auto &resource : resources)
-    {
-        total += resource.second;
-    }
-    return total;
-}
-void Player::useDevelopmentCard(std::vector<Player> &players, Board &board)
-{
-    std::cout << "Choose a development card to use: ";
-    for (const auto &card : developmentCards)
-    {
-        std::cout << developmentCardTypeToString(card.first) << " (" << card.second << "), ";
-    }
-    std::cout << std::endl;
-
-    std::string cardType;
-    std::getline(std::cin, cardType);
-    DevelopmentCardType card = stringToDevelopmentCardType(cardType);
-
-    if (developmentCards[card] > 0)
-    {
-        developmentCards[card]--;
-        switch (card)
-        {
-        case DevelopmentCardType::Monopoly:
-            useMonopoly(players);
-            break;
-        case DevelopmentCardType::RoadBuilding:
-            useRoadBuilding(board);
-            break;
-        case DevelopmentCardType::YearOfPlenty:
-            useYearOfPlenty();
-            break;
-        case DevelopmentCardType::Knight:
-            useKnight();
-            break;
-        case DevelopmentCardType::VictoryPoint:
-            addVictoryPoint(1);
-            break;
-        default:
-            std::cout << "Invalid development card." << std::endl;
-            break;
-        }
+        developmentCards[cardIndex]->useCard(*this, players, board);
+        delete developmentCards[cardIndex];
+        developmentCards.erase(developmentCards.begin() + cardIndex);
     }
     else
     {
-        std::cout << "You do not have this development card." << std::endl;
+        std::cout << "Invalid card index" << std::endl;
     }
 }
 
-void Player::useMonopoly(std::vector<Player> &players)
+void Player::playKnightCard(std::vector<Player> &players)
 {
-    std::string resource;
-    std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
-    std::getline(std::cin, resource);
-    ResourceType resType = stringToResourceType(resource);
+    knightCount++;
+    checkAndUpdateLargestArmy(players);
+}
 
-    for (auto &player : players)
+void Player::checkAndUpdateLargestArmy(std::vector<Player> &players)
+{
+    if (knightCount >= 3)
     {
-        if (player.getPlayerId() != playerId)
+        if (largestArmyPlayer == nullptr || knightCount > largestArmyPlayer->knightCount)
         {
-            int amount = player.getResourceCount(resType);
-            player.addResource(resType, -amount);
-            addResource(resType, amount);
+            if (largestArmyPlayer != nullptr)
+            {
+                largestArmyPlayer->hasLargestArmy = false;
+                largestArmyPlayer->addVictoryPoint(-2);
+            }
+            largestArmyPlayer = this;
+            hasLargestArmy = true;
+            addVictoryPoint(2);
         }
     }
 }
 
-void Player::useRoadBuilding(Board &board)
+bool Player::buildSettlement(int vertexId)
 {
-    for (int i = 0; i < 2; ++i)
+    if (canBuildSettlement())
     {
-        int edgeId;
-        std::cout << "Enter edge ID to build road: ";
-        std::cin >> edgeId;
-        std::cin.ignore();
-        if (board.buildRoad(playerId, edgeId))
+        resources[ResourceType::Wood]--;
+        resources[ResourceType::Brick]--;
+        resources[ResourceType::Wool]--;
+        resources[ResourceType::Oat]--;
+        addSettlement(vertexId);
+        return true;
+    }
+    return false;
+}
+
+bool Player::canBuildSettlement() const
+{
+    return getResourceCount(ResourceType::Wood) > 0 &&
+           getResourceCount(ResourceType::Brick) > 0 &&
+           getResourceCount(ResourceType::Wool) > 0 &&
+           getResourceCount(ResourceType::Oat) > 0;
+}
+
+bool Player::buildRoad(int edgeId)
+{
+    if (canBuildRoad())
+    {
+        resources[ResourceType::Wood]--;
+        resources[ResourceType::Brick]--;
+        addRoad(edgeId);
+        return true;
+    }
+    return false;
+}
+
+bool Player::canBuildRoad() const
+{
+    return getResourceCount(ResourceType::Wood) > 0 &&
+           getResourceCount(ResourceType::Brick) > 0;
+}
+
+bool Player::buildCity(int vertexId)
+{
+    if (canBuildCity())
+    {
+        resources[ResourceType::Iron] -= 3;
+        resources[ResourceType::Oat] -= 2;
+        auto it = std::find(settlements.begin(), settlements.end(), vertexId);
+        if (it != settlements.end())
         {
-            addRoad(edgeId);
+            settlements.erase(it);
+            addVictoryPoint(-1);
         }
+        addCity(vertexId);
+        return true;
     }
+    return false;
 }
 
-void Player::useYearOfPlenty()
+bool Player::canBuildCity() const
 {
-    for (int i = 0; i < 2; ++i)
-    {
-        std::string resource;
-        std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
-        std::getline(std::cin, resource);
-        ResourceType resType = stringToResourceType(resource);
-        addResource(resType, 1);
-    }
-}
-
-void Player::useKnight()
-{
-    addVictoryPoint(2); // Assuming the largest army logic is handled elsewhere
+    return getResourceCount(ResourceType::Iron) >= 3 &&
+           getResourceCount(ResourceType::Oat) >= 2;
 }
