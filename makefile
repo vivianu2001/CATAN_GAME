@@ -1,19 +1,18 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -std=c++11 -Wall -Iinclude
 
-SRCS = main.cpp Board.cpp Edge.cpp Tile.cpp Vertex.cpp Player.cpp KnightCard.cpp PromotionCard.cpp VictoryPointCard.cpp
-HEADERS = Board.hpp Tile.hpp Edge.hpp Vertex.hpp Player.hpp Enums.hpp DevelopmentCard.hpp KnightCard.hpp PromotionCard.hpp VictoryPointCard.hpp
-TEST_SRCS = Test_Board.cpp TestCounter.cpp
-TEST_SRCS = Test_Board.cpp TestCounter.cpp
+SRCS = src/main.cpp src/Board.cpp src/Edge.cpp src/Tile.cpp src/Vertex.cpp src/Player.cpp src/KnightCard.cpp src/PromotionCard.cpp src/VictoryPointCard.cpp
+HEADERS = include/Board.hpp include/Tile.hpp include/Edge.hpp include/Vertex.hpp include/Player.hpp include/Enums.hpp
+TEST_SRCS = tests/Test_Board.cpp tests/TestCounter.cpp src/Board.cpp src/Edge.cpp src/Tile.cpp src/Vertex.cpp src/Player.cpp src/KnightCard.cpp src/PromotionCard.cpp src/VictoryPointCard.cpp
 
 all: catan
 
 catan: $(SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o catan $(SRCS) $(LDFLAGS)
 
-test: $(TEST_SRCS) $(filter-out main.cpp, $(SRCS)) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o test_board Test_Board.cpp $(filter-out main.cpp, $(SRCS)) $(LDFLAGS)
-	./test_board
+test: $(TEST_SRCS) $(HEADERS)
+	$(CXX) $(CXXFLAGS) -o test_catan $(TEST_SRCS) $(LDFLAGS)
+	./test_catan
 
 clean:
-	rm -f catan test_board test_counter
+	rm -f catan test_catan
