@@ -7,9 +7,8 @@
 #include "DevelopmentCardBank.hpp"
 
 int Player::playerCount = 0;
-Player *Player::largestArmyPlayer = nullptr;
 
-Player::Player(const std::string &name) : knightCount(0), hasLargestArmy(false), name(name), victoryPoints(0)
+Player::Player(const std::string &name) : knightCount(0), name(name), victoryPoints(0)
 {
     playerId = ++playerCount;
     for (ResourceType type : {ResourceType::Wood, ResourceType::Brick, ResourceType::Wool, ResourceType::Iron, ResourceType::Oat})
@@ -46,6 +45,14 @@ const std::vector<int> &Player::getRoads() const
 int Player::getRoadCount() const
 {
     return roads.size();
+}
+int Player::getKnightCount() const
+{
+    return knightCount;
+}
+int Player::addKnightCount()
+{
+    return knightCount++;
 }
 void Player::addResource(ResourceType type, int amount)
 {
@@ -154,72 +161,28 @@ void Player::printStatus() const
     {
         std::cout << "Vertex ID: " << city << std::endl;
     }
-    std::cout << "Development Cards:" << std::endl;
-    for (const auto &card : developmentCards)
-    {
-        if (dynamic_cast<PromotionCard *>(card))
-        {
-            PromotionCard *promotionCard = static_cast<PromotionCard *>(card);
-            switch (promotionCard->getType())
-            {
-            case PromotionCardType::MONOPOLY:
-                std::cout << "Monopoly" << std::endl;
-                break;
-            case PromotionCardType::BUILDING_ROADS:
-                std::cout << "Building Roads" << std::endl;
-                break;
-            case PromotionCardType::YEAR_OF_PLENTY:
-                std::cout << "Year of Plenty" << std::endl;
-                break;
-            }
-        }
-        else if (dynamic_cast<KnightCard *>(card))
-        {
-            std::cout << "Knight" << std::endl;
-        }
-        else if (dynamic_cast<VictoryPointCard *>(card))
-        {
-            std::cout << "Victory Point" << std::endl;
-        }
-    }
-    std::cout << "Victory Points: " << victoryPoints << std::endl;
+    std::cout << "Victory Points:" << this->getVictoryPoints() << std::endl;
+    std::cout << "Cards:" << std::endl;
+    developmentCardBank.printDevelopmentCards();
 }
-void Player::buyDevelopmentCard()
+bool Player::buyDevelopmentCard()
 {
     if (developmentCardBank.canAfford(*this))
     {
         developmentCardBank.purchase(*this);
 
-        // Randomly assign a development card
-        int cardType = std::rand() % 5;
-        DevelopmentCardType card;
-        switch (cardType)
-        {
-        case 0:
-            card = DevelopmentCardType::Monopoly;
-            break;
-        case 1:
-            card = DevelopmentCardType::RoadBuilding;
-            break;
-        case 2:
-            card = DevelopmentCardType::YearOfPlenty;
-            break;
-        case 3:
-            card = DevelopmentCardType::Knight;
-            break;
-        case 4:
-            card = DevelopmentCardType::VictoryPoint;
-            break;
-        default:
-            card = DevelopmentCardType::VictoryPoint; // Default case to avoid any issue
-            break;
-        }
+        DevelopmentCardType card = developmentCardBank.buyDevelopmentCard(*this);
         developmentCardBank.addDevelopmentCard(card);
+
+        // developmentCardBank.addDevelopmentCard(card);
+
         std::cout << "Player " << name << " bought a development card." << std::endl;
+        return true;
     }
     else
     {
         std::cout << "Not enough resources to buy a development card" << std::endl;
+        return false;
     }
 }
 
@@ -231,26 +194,8 @@ void Player::useDevelopmentCard(int cardIndex, std::vector<Player> &players, Boa
 void Player::playKnightCard(std::vector<Player> &players)
 {
     knightCount++;
-    checkAndUpdateLargestArmy(players);
 }
 
-void Player::checkAndUpdateLargestArmy(std::vector<Player> &players)
-{
-    if (knightCount >= 3)
-    {
-        if (largestArmyPlayer == nullptr || knightCount > largestArmyPlayer->knightCount)
-        {
-            if (largestArmyPlayer != nullptr)
-            {
-                largestArmyPlayer->hasLargestArmy = false;
-                largestArmyPlayer->addVictoryPoint(-2);
-            }
-            largestArmyPlayer = this;
-            hasLargestArmy = true;
-            addVictoryPoint(2);
-        }
-    }
-}
 bool Player::hasDevelopmentCard(DevelopmentCardType card) const
 {
     return developmentCardBank.hasDevelopmentCard(card);

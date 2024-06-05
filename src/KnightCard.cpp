@@ -10,5 +10,11 @@ KnightCard::KnightCard()
 
 void KnightCard::useCard(Player &player, std::vector<Player> &players, Board &board)
 {
-    player.playKnightCard(players);
+
+    player.addKnightCount();
+    if (player.getKnightCount() == 3)
+    {
+
+        player.addVictoryPoint(2);
+    }
 }

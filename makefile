@@ -11,8 +11,8 @@ SRCS = $(wildcard $(SRCDIR)/*.cpp)
 HEADERS = $(wildcard $(INCDIR)/*.hpp)
 TEST_SRCS = $(wildcard $(TESTDIR)/*.cpp)
 
-# Object files
-MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(filter-out $(SRCDIR)/Bank.cpp,$(SRCS)))
+# Exclude main.cpp from the main object files
+MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(filter-out $(SRCDIR)/main.cpp,$(SRCS)))
 TEST_OBJS = $(patsubst $(TESTDIR)/%.cpp,$(BUILDDIR)/%.o,$(TEST_SRCS))
 
 # Targets
@@ -24,7 +24,7 @@ all: $(TARGET)
 $(TARGET): $(MAIN_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(TEST_TARGET): $(TEST_OBJS) $(MAIN_OBJS)
+$(TEST_TARGET): $(TEST_OBJS) $(filter-out $(BUILDDIR)/main.o,$(MAIN_OBJS))
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 # Pattern rule for building object files

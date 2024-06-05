@@ -19,7 +19,7 @@ public:
     const std::vector<Edge> &getEdges() const;
     bool buildSettlement(int playerId, int vertexId, bool start);
     std::vector<ResourceType> initializeSettlements(int player, int vertex_id);
-    bool isTwoRoadSegmentsAway(int vertexId) const;
+    bool isTwoRoadSegmentsAway(int vertexId, int playerId) const;
     bool buildRoad(int playerId, int edgeId);
     void distributeResources(int diceRoll, std::vector<Player> &players);
     bool buildCity(int playerId, int vertexId);

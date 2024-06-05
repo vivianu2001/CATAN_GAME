@@ -48,7 +48,6 @@ public:
 
 private:
     int id;                                         // Unique identifier for the vertex
-    bool occupied = false;                          // Flag to check if there is a building
     BuildingType buildingType = BuildingType::None; // Type of building on the vertex
     int ownerPlayerId = -1;
     std::vector<int> adjacentEdges;

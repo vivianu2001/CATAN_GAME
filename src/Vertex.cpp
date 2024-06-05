@@ -1,17 +1,11 @@
 #include "Vertex.hpp"
 
-Vertex::Vertex(int id) : id(id), occupied(false), ownerPlayerId(-1) {}
-
-// Returns true if there is a building on the vertex
-bool Vertex::isOccupied() const
-{
-    return buildingType != BuildingType::None;
-}
+Vertex::Vertex(int id) : id(id), ownerPlayerId(-1) {}
 
 // Settle a vertex with a building
 void Vertex::build(BuildingType type, int playerId)
 {
-    occupied = true;
+
     buildingType = type;
     ownerPlayerId = playerId;
 }

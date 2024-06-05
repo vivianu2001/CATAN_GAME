@@ -24,6 +24,8 @@ public:
     const std::string &getName() const;
     int getResourceCount(ResourceType type) const;
     int getRoadCount() const;
+    int getKnightCount() const;
+    int addKnightCount();
     const std::vector<int> &getRoads() const;
     const std::vector<int> &getSettlements() const;
     int getSettlementCount() const;
@@ -40,7 +42,7 @@ public:
     bool buildSettlement(int vertexId);
     bool buildRoad(int edgeId);
     bool buildCity(int vertexId);
-    void buyDevelopmentCard();
+    bool buyDevelopmentCard();
 
     void useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board);
 
@@ -55,9 +57,8 @@ public:
 
 private:
     static int playerCount;
-    static Player *largestArmyPlayer;
+
     int knightCount;
-    bool hasLargestArmy;
     int playerId;
     std::string name;
     int victoryPoints;

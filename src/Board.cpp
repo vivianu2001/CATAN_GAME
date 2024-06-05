@@ -93,7 +93,7 @@ const std::vector<Vertex> &Board::getVertices() const
 { // Match the declaration: const function returning a const reference.
     return vertices;
 }
-bool Board::isTwoRoadSegmentsAway(int vertexId) const
+bool Board::isTwoRoadSegmentsAway(int vertexId, int playerId) const
 {
     for (const auto &edgeId : vertices[vertexId].getAdjacentEdges())
     {
@@ -101,7 +101,7 @@ bool Board::isTwoRoadSegmentsAway(int vertexId) const
         int neighbor2 = edges[edgeId].getVertex2();
         int neighborVertexId = (neighbor1 == vertexId) ? neighbor2 : neighbor1;
 
-        if (vertices[neighborVertexId].getOwner() != -1)
+        if (vertices[neighborVertexId].getOwner() != playerId)
         {
             return false;
         }
@@ -142,7 +142,7 @@ bool Board::buildSettlement(int playerId, int vertexId, bool start)
         }
 
         // Check if the vertex is at least two road segments away from another settlement
-        if (!isTwoRoadSegmentsAway(vertexId))
+        if (!isTwoRoadSegmentsAway(vertexId, playerId))
         {
             std::cout << "Vertex is too close to another settlement" << std::endl;
             return false;
@@ -260,7 +260,7 @@ bool Board::buildCity(int playerId, int vertexId)
         return false;
     }
 
-    if (vertices[vertexId].getOwner() == playerId && vertices[vertexId].isCity() == false)
+    if (vertices[vertexId].getOwner() == playerId)
     {
         vertices[vertexId].upgradeToCity();
         // std::cout << "City built successfully" << std::endl;

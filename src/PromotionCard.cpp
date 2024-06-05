@@ -62,14 +62,11 @@ void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board 
     {
         for (int i = 0; i < 2; ++i)
         {
-            int edgeId;
-            std::cout << "Enter edge ID to build road: ";
-            std::cin >> edgeId;
-            std::cin.ignore();
-            if (board.buildRoad(player.getPlayerId(), edgeId))
-            {
-                player.addRoad(edgeId);
-            }
+            std::string resource;
+            std::cout << "Enter the resource type (Wood, Brick, Wool, Iron, Oat): ";
+            std::getline(std::cin, resource);
+            ResourceType resType = stringToResourceType(resource);
+            player.addResource(resType, 1);
         }
         break;
     }

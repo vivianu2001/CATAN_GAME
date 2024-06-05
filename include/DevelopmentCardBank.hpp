@@ -20,8 +20,12 @@ public:
     void useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board);
     void printDevelopmentCards() const;
 
+    DevelopmentCardType buyDevelopmentCard(Player &player);
+
 private:
     std::vector<DevelopmentCard *> developmentCards;
+    static int VictoryCards;
+    static int KnightCards;
 };
 
 #endif // DEVELOPMENTCARDBANK_HPP

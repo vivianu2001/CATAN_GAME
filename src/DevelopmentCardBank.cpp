@@ -5,6 +5,9 @@
 #include "Player.hpp"
 #include "DevelopmentCard.hpp"
 
+int DevelopmentCardBank ::KnightCards = 0;
+int DevelopmentCardBank ::VictoryCards = 0;
+
 bool DevelopmentCardBank::canAfford(const Player &player) const
 {
     return player.getResourceCount(ResourceType::Iron) >= 1 &&
@@ -86,12 +89,6 @@ void DevelopmentCardBank::removeDevelopmentCard(DevelopmentCardType card)
                 return;
             }
         }
-        if (dynamic_cast<VictoryPointCard *>(*it) && card == DevelopmentCardType::VictoryPoint)
-        {
-            delete *it;
-            developmentCards.erase(it);
-            return;
-        }
     }
 }
 
@@ -133,9 +130,49 @@ void DevelopmentCardBank::printDevelopmentCards() const
         {
             std::cout << "Knight" << std::endl;
         }
-        else if (dynamic_cast<VictoryPointCard *>(card))
-        {
-            std::cout << "Victory Point" << std::endl;
-        }
     }
+}
+DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
+{
+
+    int cardType = std::rand() % 5;
+    DevelopmentCardType card;
+    if (VictoryCards == 4 && KnightCards < 3)
+    {
+        cardType = 3;
+    }
+    if (VictoryCards < 4 && KnightCards == 3)
+    {
+        cardType = 4;
+    }
+    if (VictoryCards == 4 && KnightCards == 3)
+    {
+        cardType = 0;
+    }
+
+    switch (cardType)
+    {
+    case 0:
+        card = DevelopmentCardType::Monopoly;
+
+        break;
+    case 1:
+        card = DevelopmentCardType::RoadBuilding;
+
+        break;
+    case 2:
+        card = DevelopmentCardType::YearOfPlenty;
+
+        break;
+    case 3:
+        card = DevelopmentCardType::Knight;
+        KnightCards++;
+        break;
+    case 4:
+        card = DevelopmentCardType::VictoryPoint;
+        VictoryCards++;
+        player.addVictoryPoint(2);
+        break;
+    }
+    return card;
 }
