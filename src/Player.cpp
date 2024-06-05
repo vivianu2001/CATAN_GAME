@@ -4,6 +4,7 @@
 #include "PromotionCard.hpp"
 #include "KnightCard.hpp"
 #include "VictoryPointCard.hpp"
+#include "DevelopmentCardBank.hpp"
 
 int Player::playerCount = 0;
 Player *Player::largestArmyPlayer = nullptr;
@@ -32,15 +33,9 @@ int Player::getResourceCount(ResourceType type) const
     auto it = resources.find(type);
     return it != resources.end() ? it->second : 0;
 }
-
-void Player::addResource(ResourceType type, int amount)
+const std::vector<int> &Player::getSettlements() const
 {
-    resources[type] += amount;
-}
-
-void Player::addRoad(int edgeId)
-{
-    roads.push_back(edgeId);
+    return settlements;
 }
 
 const std::vector<int> &Player::getRoads() const
@@ -52,16 +47,19 @@ int Player::getRoadCount() const
 {
     return roads.size();
 }
+void Player::addResource(ResourceType type, int amount)
+{
+    resources[type] += amount;
+}
 
+void Player::addRoad(int edgeId)
+{
+    roads.push_back(edgeId);
+}
 void Player::addSettlement(int vertexId)
 {
     settlements.push_back(vertexId);
-    addVictoryPoint(1);
-}
-
-const std::vector<int> &Player::getSettlements() const
-{
-    return settlements;
+    // addVictoryPoint(1);
 }
 
 int Player::getSettlementCount() const
@@ -72,7 +70,6 @@ int Player::getSettlementCount() const
 void Player::addCity(int vertexId)
 {
     cities.push_back(vertexId);
-    addVictoryPoint(1);
 }
 
 const std::vector<int> &Player::getCities() const
@@ -95,6 +92,44 @@ void Player::addVictoryPoint(int points)
     victoryPoints += points;
 }
 
+bool Player::buildSettlement(int vertexId)
+{
+    if (settlementBank.canAfford(*this))
+    {
+        settlementBank.purchase(*this);
+        addSettlement(vertexId);
+        return true;
+    }
+    return false;
+}
+
+bool Player::buildRoad(int edgeId)
+{
+    if (roadBank.canAfford(*this))
+    {
+        roadBank.purchase(*this);
+        addRoad(edgeId);
+        return true;
+    }
+    return false;
+}
+
+bool Player::buildCity(int vertexId)
+{
+
+    if (cityBank.canAfford(*this))
+    {
+        cityBank.purchase(*this);
+        auto it = std::find(settlements.begin(), settlements.end(), vertexId);
+        if (it != settlements.end())
+        {
+            settlements.erase(it);
+        }
+        addCity(vertexId);
+        return true;
+    }
+    return false;
+}
 void Player::printStatus() const
 {
     std::cout << "Player " << name << " status:" << std::endl;
@@ -149,46 +184,38 @@ void Player::printStatus() const
     }
     std::cout << "Victory Points: " << victoryPoints << std::endl;
 }
-
 void Player::buyDevelopmentCard()
 {
-    if (getResourceCount(ResourceType::Iron) > 0 &&
-        getResourceCount(ResourceType::Wool) > 0 &&
-        getResourceCount(ResourceType::Oat) > 0)
+    if (developmentCardBank.canAfford(*this))
     {
-        resources[ResourceType::Iron]--;
-        resources[ResourceType::Wool]--;
-        resources[ResourceType::Oat]--;
+        developmentCardBank.purchase(*this);
 
         // Randomly assign a development card
         int cardType = std::rand() % 5;
-        DevelopmentCard *card;
+        DevelopmentCardType card;
         switch (cardType)
         {
         case 0:
-            card = new PromotionCard(PromotionCardType::MONOPOLY);
+            card = DevelopmentCardType::Monopoly;
             break;
         case 1:
-            card = new PromotionCard(PromotionCardType::BUILDING_ROADS);
+            card = DevelopmentCardType::RoadBuilding;
             break;
         case 2:
-            card = new PromotionCard(PromotionCardType::YEAR_OF_PLENTY);
+            card = DevelopmentCardType::YearOfPlenty;
             break;
         case 3:
-            card = new KnightCard();
+            card = DevelopmentCardType::Knight;
             break;
         case 4:
-            card = new VictoryPointCard();
+            card = DevelopmentCardType::VictoryPoint;
             break;
         default:
-            card = nullptr; // Should not happen
+            card = DevelopmentCardType::VictoryPoint; // Default case to avoid any issue
             break;
         }
-        if (card)
-        {
-            developmentCards.push_back(card);
-            std::cout << "Player " << name << " bought a development card." << std::endl;
-        }
+        developmentCardBank.addDevelopmentCard(card);
+        std::cout << "Player " << name << " bought a development card." << std::endl;
     }
     else
     {
@@ -198,16 +225,7 @@ void Player::buyDevelopmentCard()
 
 void Player::useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board)
 {
-    if (cardIndex < developmentCards.size())
-    {
-        developmentCards[cardIndex]->useCard(*this, players, board);
-        delete developmentCards[cardIndex];
-        developmentCards.erase(developmentCards.begin() + cardIndex);
-    }
-    else
-    {
-        std::cout << "Invalid card index" << std::endl;
-    }
+    developmentCardBank.useDevelopmentCard(cardIndex, *this, players, board);
 }
 
 void Player::playKnightCard(std::vector<Player> &players)
@@ -233,141 +251,19 @@ void Player::checkAndUpdateLargestArmy(std::vector<Player> &players)
         }
     }
 }
-
-bool Player::buildSettlement(int vertexId)
-{
-    if (canBuildSettlement())
-    {
-        resources[ResourceType::Wood]--;
-        resources[ResourceType::Brick]--;
-        resources[ResourceType::Wool]--;
-        resources[ResourceType::Oat]--;
-        addSettlement(vertexId);
-        return true;
-    }
-    return false;
-}
-
-bool Player::canBuildSettlement() const
-{
-    return getResourceCount(ResourceType::Wood) > 0 &&
-           getResourceCount(ResourceType::Brick) > 0 &&
-           getResourceCount(ResourceType::Wool) > 0 &&
-           getResourceCount(ResourceType::Oat) > 0;
-}
-
-bool Player::buildRoad(int edgeId)
-{
-    if (canBuildRoad())
-    {
-        resources[ResourceType::Wood]--;
-        resources[ResourceType::Brick]--;
-        addRoad(edgeId);
-        return true;
-    }
-    return false;
-}
-
-bool Player::canBuildRoad() const
-{
-    return getResourceCount(ResourceType::Wood) > 0 &&
-           getResourceCount(ResourceType::Brick) > 0;
-}
-
-bool Player::buildCity(int vertexId)
-{
-    if (canBuildCity())
-    {
-        resources[ResourceType::Iron] -= 3;
-        resources[ResourceType::Oat] -= 2;
-        auto it = std::find(settlements.begin(), settlements.end(), vertexId);
-        if (it != settlements.end())
-        {
-            settlements.erase(it);
-            addVictoryPoint(-1);
-        }
-        addCity(vertexId);
-        return true;
-    }
-    return false;
-}
-
-bool Player::canBuildCity() const
-{
-    return getResourceCount(ResourceType::Iron) >= 3 &&
-           getResourceCount(ResourceType::Oat) >= 2;
-}
 bool Player::hasDevelopmentCard(DevelopmentCardType card) const
 {
-    for (const auto &devCard : developmentCards)
-    {
-        if (dynamic_cast<KnightCard *>(devCard) && card == DevelopmentCardType::Knight)
-        {
-            return true;
-        }
-        if (auto promotionCard = dynamic_cast<PromotionCard *>(devCard))
-        {
-            if (card == toDevelopmentCardType(promotionCard->getType()))
-            {
-                return true;
-            }
-        }
-        if (dynamic_cast<VictoryPointCard *>(devCard) && card == DevelopmentCardType::VictoryPoint)
-        {
-            return true;
-        }
-    }
-    return false;
+    return developmentCardBank.hasDevelopmentCard(card);
 }
 
 void Player::addDevelopmentCard(DevelopmentCardType card)
 {
-    switch (card)
-    {
-    case DevelopmentCardType::Knight:
-        developmentCards.push_back(new KnightCard());
-        break;
-    case DevelopmentCardType::Monopoly:
-        developmentCards.push_back(new PromotionCard(PromotionCardType::MONOPOLY));
-        break;
-    case DevelopmentCardType::RoadBuilding:
-        developmentCards.push_back(new PromotionCard(PromotionCardType::BUILDING_ROADS));
-        break;
-    case DevelopmentCardType::YearOfPlenty:
-        developmentCards.push_back(new PromotionCard(PromotionCardType::YEAR_OF_PLENTY));
-        break;
-    case DevelopmentCardType::VictoryPoint:
-        developmentCards.push_back(new VictoryPointCard());
-        break;
-    }
+    developmentCardBank.addDevelopmentCard(card);
 }
 
 void Player::removeDevelopmentCard(DevelopmentCardType card)
 {
-    for (auto it = developmentCards.begin(); it != developmentCards.end(); ++it)
-    {
-        if (dynamic_cast<KnightCard *>(*it) && card == DevelopmentCardType::Knight)
-        {
-            delete *it;
-            developmentCards.erase(it);
-            return;
-        }
-        if (auto promotionCard = dynamic_cast<PromotionCard *>(*it))
-        {
-            if (card == toDevelopmentCardType(promotionCard->getType()))
-            {
-                delete *it;
-                developmentCards.erase(it);
-                return;
-            }
-        }
-        if (dynamic_cast<VictoryPointCard *>(*it) && card == DevelopmentCardType::VictoryPoint)
-        {
-            delete *it;
-            developmentCards.erase(it);
-            return;
-        }
-    }
+    developmentCardBank.removeDevelopmentCard(card);
 }
 void Player::resetPlayerCount()
 {

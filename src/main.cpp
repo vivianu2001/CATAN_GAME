@@ -6,13 +6,9 @@
 #include "Player.hpp"
 #include "Board.hpp"
 #include "Enums.hpp"
+#include "TradeManager.hpp"
 
 int rollDice();
-void trade(Player &player1, Player &player2);
-void initiateTrade(Player &playerA, Player &playerB);
-bool verifyTrade(Player &playerA, Player &playerB, DevelopmentCardType cardA, DevelopmentCardType cardB);
-
-void executeTrade(Player &playerA, Player &playerB, DevelopmentCardType cardA, DevelopmentCardType cardB);
 int main(int argc, char **argv)
 {
     std::srand(std::time(0));
@@ -73,7 +69,51 @@ int main(int argc, char **argv)
                     {
                         if (otherPlayer.getName() == tradeWith)
                         {
-                            trade(player, otherPlayer);
+                            std::string tradeType;
+                            std::cout << "Enter trade type (resource/development): ";
+                            std::getline(std::cin, tradeType);
+
+                            if (tradeType == "resource")
+                            {
+                                std::string resource1, resource2;
+                                int amount1, amount2;
+
+                                std::cout << "Enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
+                                std::getline(std::cin, resource1);
+                                std::cout << "Enter the amount: ";
+                                std::cin >> amount1;
+                                std::cin.ignore();
+
+                                std::cout << "Enter the resource you want to receive (Wood, Brick, Wool, Iron, Oat): ";
+                                std::getline(std::cin, resource2);
+                                std::cout << "Enter the amount: ";
+                                std::cin >> amount2;
+                                std::cin.ignore();
+
+                                ResourceType res1 = stringToResourceType(resource1);
+                                ResourceType res2 = stringToResourceType(resource2);
+
+                                TradeManager::tradeResources(player, res1, amount1, otherPlayer, res2, amount2);
+                            }
+                            else if (tradeType == "development")
+                            {
+                                std::string cardType1, cardType2;
+
+                                std::cout << "Enter the type of development card you want to trade: ";
+                                std::getline(std::cin, cardType1);
+                                std::cout << "Enter the type of development card you want to receive: ";
+                                std::getline(std::cin, cardType2);
+
+                                DevelopmentCardType card1 = stringToDevelopmentCardType(cardType1);
+                                DevelopmentCardType card2 = stringToDevelopmentCardType(cardType2);
+
+                                TradeManager::tradeDevelopmentCards(player, otherPlayer, card1, card2);
+                            }
+                            else
+                            {
+                                std::cout << "Invalid trade type." << std::endl;
+                            }
+
                             playerFound = true;
                             break;
                         }
@@ -84,47 +124,18 @@ int main(int argc, char **argv)
                         std::cout << "Player not found. Please try again." << std::endl;
                     }
                 }
-                else if (action == "trade_development")
-                {
-                    std::string tradeWith;
-                    std::cout << "Enter the name of the player you want to trade development cards with: ";
-                    std::getline(std::cin, tradeWith);
 
-                    if (tradeWith == player.getName())
-                    {
-                        std::cout << "You cannot trade with yourself." << std::endl;
-                        continue;
-                    }
-
-                    bool playerFound = false;
-                    for (auto &otherPlayer : players)
-                    {
-                        if (otherPlayer.getName() == tradeWith)
-                        {
-                            initiateTrade(player, otherPlayer);
-                            playerFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!playerFound)
-                    {
-                        std::cout << "Player not found. Please try again." << std::endl;
-                    }
-                }
                 else if (action == "build_road")
                 {
-                    if (player.canBuildRoad())
+                    int edgeId;
+                    std::cout << "Enter edge ID to build road: ";
+                    std::cin >> edgeId;
+                    std::cin.ignore();
+                    if (board.buildRoad(player.getPlayerId(), edgeId))
                     {
-                        int edgeId;
-                        std::cout << "Enter edge ID to build road: ";
-                        std::cin >> edgeId;
-                        std::cin.ignore();
-                        if (board.buildRoad(player.getPlayerId(), edgeId))
-                        {
-                            player.buildRoad(edgeId);
-                        }
+                        player.buildRoad(edgeId);
                     }
+
                     else
                     {
                         std::cout << "Player cannot build road." << std::endl;
@@ -132,17 +143,15 @@ int main(int argc, char **argv)
                 }
                 else if (action == "build_settlement")
                 {
-                    if (player.canBuildSettlement())
+                    int vertexId;
+                    std::cout << "Enter vertex ID to build settlement: ";
+                    std::cin >> vertexId;
+                    std::cin.ignore();
+                    if (board.buildSettlement(player.getPlayerId(), vertexId, false))
                     {
-                        int vertexId;
-                        std::cout << "Enter vertex ID to build settlement: ";
-                        std::cin >> vertexId;
-                        std::cin.ignore();
-                        if (board.buildSettlement(player.getPlayerId(), vertexId, false))
-                        {
-                            player.buildSettlement(vertexId);
-                        }
+                        player.buildSettlement(vertexId);
                     }
+
                     else
                     {
                         std::cout << "Player cannot build settlement." << std::endl;
@@ -150,17 +159,15 @@ int main(int argc, char **argv)
                 }
                 else if (action == "build_city")
                 {
-                    if (player.canBuildCity())
+                    int vertexId;
+                    std::cout << "Enter vertex ID to build city: ";
+                    std::cin >> vertexId;
+                    std::cin.ignore();
+                    if (board.buildCity(player.getPlayerId(), vertexId))
                     {
-                        int vertexId;
-                        std::cout << "Enter vertex ID to build city: ";
-                        std::cin >> vertexId;
-                        std::cin.ignore();
-                        if (board.buildCity(player.getPlayerId(), vertexId))
-                        {
-                            player.buildCity(vertexId);
-                        }
+                        player.buildCity(vertexId);
                     }
+
                     else
                     {
                         std::cout << "Player cannot build city." << std::endl;
@@ -209,82 +216,4 @@ int rollDice()
     int die1 = std::rand() % 6 + 1;
     int die2 = std::rand() % 6 + 1;
     return die1 + die2;
-}
-
-void trade(Player &player1, Player &player2)
-{
-    std::string resource1, resource2;
-    int amount1, amount2;
-
-    std::cout << player1.getName() << ", enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
-    std::getline(std::cin, resource1);
-    std::cout << "Enter the amount: ";
-    std::cin >> amount1;
-    std::cin.ignore();
-
-    std::cout << player2.getName() << ", enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
-    std::getline(std::cin, resource2);
-    std::cout << "Enter the amount: ";
-    std::cin >> amount2;
-    std::cin.ignore();
-
-    ResourceType res1 = stringToResourceType(resource1);
-    ResourceType res2 = stringToResourceType(resource2);
-    std::cout << "Player 1 resource:" << player1.getResourceCount(res1);
-    std::cout << "Player 2 resource:" << player2.getResourceCount(res2);
-
-    if (player1.getResourceCount(res1) >= amount1 && player2.getResourceCount(res2) >= amount2)
-    {
-        player1.addResource(res1, -amount1);
-        player2.addResource(res2, -amount2);
-
-        player1.addResource(res2, amount2);
-        player2.addResource(res1, amount1);
-
-        std::cout << "Trade successful!" << std::endl;
-    }
-    else
-    {
-        std::cout << "Trade failed. Not enough resources." << std::endl;
-    }
-}
-
-void initiateTrade(Player &playerA, Player &playerB)
-{
-    std::string cardTypeA, cardTypeB;
-    std::cout << playerA.getName() << ", enter the type of development card you want to trade: ";
-    std::getline(std::cin, cardTypeA);
-    std::cout << playerB.getName() << ", enter the type of development card you want to receive: ";
-    std::getline(std::cin, cardTypeB);
-
-    // Convert strings to card types
-    DevelopmentCardType cardA = stringToDevelopmentCardType(cardTypeA);
-    DevelopmentCardType cardB = stringToDevelopmentCardType(cardTypeB);
-
-    // Proceed with verification and trade
-    if (verifyTrade(playerA, playerB, cardA, cardB))
-    {
-        executeTrade(playerA, playerB, cardA, cardB);
-    }
-    else
-    {
-        std::cout << "Trade verification failed. Ensure both players have the specified cards." << std::endl;
-    }
-}
-
-bool verifyTrade(Player &playerA, Player &playerB, DevelopmentCardType cardA, DevelopmentCardType cardB)
-{
-    return playerA.hasDevelopmentCard(cardA) && playerB.hasDevelopmentCard(cardB);
-}
-
-void executeTrade(Player &playerA, Player &playerB, DevelopmentCardType cardA, DevelopmentCardType cardB)
-{
-    playerA.removeDevelopmentCard(cardA);
-    playerB.removeDevelopmentCard(cardB);
-    playerA.addDevelopmentCard(cardB);
-    playerB.addDevelopmentCard(cardA);
-
-    std::cout << "Trade executed successfully!" << std::endl;
-    playerA.printStatus();
-    playerB.printStatus();
 }

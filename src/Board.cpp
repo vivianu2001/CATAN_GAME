@@ -301,6 +301,7 @@ void Board::initializePlayerSettlementsAndRoads(Player &player, int settlement1,
     if (buildRoad(player.getPlayerId(), road2))
     {
         player.addRoad(road2);
+        player.addVictoryPoint(2);
     }
 
     player.printStatus();

@@ -1,18 +1,44 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Iinclude
 
-SRCS = src/main.cpp src/Board.cpp src/Edge.cpp src/Tile.cpp src/Vertex.cpp src/Player.cpp src/KnightCard.cpp src/PromotionCard.cpp src/VictoryPointCard.cpp
-HEADERS = include/Board.hpp include/Tile.hpp include/Edge.hpp include/Vertex.hpp include/Player.hpp include/Enums.hpp
-TEST_SRCS = tests/Test_Board.cpp tests/TestCounter.cpp src/Board.cpp src/Edge.cpp src/Tile.cpp src/Vertex.cpp src/Player.cpp src/KnightCard.cpp src/PromotionCard.cpp src/VictoryPointCard.cpp
+SRCDIR = src
+INCDIR = include
+TESTDIR = tests
+BUILDDIR = build
 
-all: catan
+# List of source files
+SRCS = $(wildcard $(SRCDIR)/*.cpp)
+HEADERS = $(wildcard $(INCDIR)/*.hpp)
+TEST_SRCS = $(wildcard $(TESTDIR)/*.cpp)
 
-catan: $(SRCS) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o catan $(SRCS) $(LDFLAGS)
+# Object files
+MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(filter-out $(SRCDIR)/Bank.cpp,$(SRCS)))
+TEST_OBJS = $(patsubst $(TESTDIR)/%.cpp,$(BUILDDIR)/%.o,$(TEST_SRCS))
 
-test: $(TEST_SRCS) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o test_catan $(TEST_SRCS) $(LDFLAGS)
-	./test_catan
+# Targets
+TARGET = catan
+TEST_TARGET = test_catan
+
+all: $(TARGET)
+
+$(TARGET): $(MAIN_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(TEST_TARGET): $(TEST_OBJS) $(MAIN_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# Pattern rule for building object files
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/%.o: $(TESTDIR)/%.cpp $(HEADERS)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+# Run tests
+test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 
 clean:
-	rm -f catan test_catan
+	rm -rf $(BUILDDIR) $(TARGET) $(TEST_TARGET)
