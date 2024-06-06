@@ -35,8 +35,16 @@ void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board 
             if (otherPlayer.getPlayerId() != player.getPlayerId())
             {
                 int amount = otherPlayer.getResourceCount(resType);
-                otherPlayer.addResource(resType, -amount);
-                player.addResource(resType, amount);
+                if (amount == 0)
+                {
+                    otherPlayer.addResource(resType, -amount);
+                    player.addResource(resType, 1);
+                }
+                else
+                {
+                    otherPlayer.addResource(resType, -1);
+                    player.addResource(resType, 1);
+                }
             }
         }
         break;
