@@ -25,7 +25,7 @@ public:
     int getResourceCount(ResourceType type) const;
     int getRoadCount() const;
     int getKnightCount() const;
-    int addKnightCount();
+    int addKnightCount(int n);
     const std::vector<int> &getRoads() const;
     const std::vector<int> &getSettlements() const;
     int getSettlementCount() const;

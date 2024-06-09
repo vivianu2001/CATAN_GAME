@@ -71,7 +71,7 @@
 //     CHECK(board.buildRoad(player4.getPlayerId(), 4) == true);
 //     CHECK(board.buildSettlement(player4.getPlayerId(), 3, false) == false);
 
-//     CHECK(board.buildRoad(player5.getPlayerId(), 3) == false); // Should fail, already occupied
+//     CHECK(board.buildRoad(player5.getPlayerId(), 3) == false);
 //     CHECK(board.buildSettlement(player5.getPlayerId(), 4, false) == false);
 //     CHECK(board.buildSettlement(player5.getPlayerId(), 3, false) == false);
 //     CHECK(board.buildSettlement(player5.getPlayerId(), 17, false) == false);

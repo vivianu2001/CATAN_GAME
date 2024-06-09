@@ -5,9 +5,12 @@
 
 class KnightCard : public DevelopmentCard
 {
+    bool used;
+
 public:
     KnightCard(); // Declare the constructor
     void useCard(Player &player, std::vector<Player> &players, Board &board) override;
+    DevelopmentCardType getType() const override;
 };
 
 #endif // KNIGHTCARD_HPP

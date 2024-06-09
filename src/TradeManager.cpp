@@ -3,12 +3,12 @@
 
 bool TradeManager::verifyTradeResources(const Player &player1, const Player &player2, ResourceType res1, int amount1, ResourceType res2, int amount2)
 {
-    return player1.getResourceCount(res1) >= amount1 && player2.getResourceCount(res2) >= amount2;
+    return player1.getResourceCount(res1) >= amount1 && player2.getResourceCount(res2) >= amount2 && amount1 > 0 && amount2 > 0 && res1 != res2;
 }
 
 bool TradeManager::verifyTradeDevelopmentCards(const Player &playerA, const Player &playerB, DevelopmentCardType cardA, DevelopmentCardType cardB)
 {
-    return playerA.hasDevelopmentCard(cardA) && playerB.hasDevelopmentCard(cardB);
+    return playerA.hasDevelopmentCard(cardA) && playerB.hasDevelopmentCard(cardB) && cardA != cardB;
 }
 
 bool TradeManager::tradeResources(Player &player1, ResourceType res1, int amount1, Player &player2, ResourceType res2, int amount2)

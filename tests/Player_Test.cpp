@@ -4,201 +4,287 @@
 #include "Board.hpp"
 #include "TradeManager.hpp"
 
-// TEST_CASE("Checking adding and removing sources by buying ")
+TEST_CASE("Checking adding and removing sources by buying ")
+{
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
+    Board board;
+    // board.initializePlayerSettlementsAndRoads(players[0], 13, 14, 41, 55);
+    // board.initializePlayerSettlementsAndRoads(players[1], 15, 18, 48, 64);
+    CHECK(players[0].buildRoad(2) == false);
+    CHECK(players[0].buildSettlement(2) == false);
+    CHECK(players[0].buildCity(2) == false);
+    CHECK(players[0].buyDevelopmentCard() == false);
+
+    players[0].addResource(ResourceType::Wood, 1);
+    players[0].addResource(ResourceType::Brick, 1);
+    CHECK(players[0].buildRoad(2) == true);
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 0);
+
+    players[0].addResource(ResourceType::Wood, 1);
+    players[0].addResource(ResourceType::Brick, 1);
+    players[0].addResource(ResourceType::Oat, 1);
+    players[0].addResource(ResourceType::Wool, 1);
+    CHECK(players[0].buildSettlement(2) == true);
+
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
+
+    players[0].addResource(ResourceType::Wood, 1);
+    players[0].addResource(ResourceType::Brick, 1);
+    players[0].addResource(ResourceType::Oat, 1);
+    players[0].addResource(ResourceType::Wool, 1);
+    players[0].addResource(ResourceType::Iron, 1);
+    CHECK(players[0].buyDevelopmentCard() == true);
+
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+
+    players[0].addResource(ResourceType::Oat, 1);
+    players[0].addResource(ResourceType::Oat, 1);
+    players[0].addResource(ResourceType::Iron, 1);
+    players[0].addResource(ResourceType::Iron, 1);
+    players[0].addResource(ResourceType::Iron, 1);
+    CHECK(players[0].buildCity(2) == true);
+
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+    Player::resetPlayerCount();
+}
+
+// TEST_CASE("Check player development cards")
 // {
-//     std::vector<Player> players = {Player("Player1"), Player("Player2")};
+//     std::vector<Player> players = {Player("Player1"), Player("Player2"), Player("Player3")};
+
+//     players[0].addDevelopmentCard(DevelopmentCardType::Monopoly);
+//     CHECK(players[0].hasDevelopmentCard(DevelopmentCardType::Monopoly) == true);
+
+//     players[1].addResource(ResourceType::Wood, 1);
+//     players[2].addResource(ResourceType::Wood, 1);
+
 //     Board board;
-//     // board.initializePlayerSettlementsAndRoads(players[0], 13, 14, 41, 55);
-//     // board.initializePlayerSettlementsAndRoads(players[1], 15, 18, 48, 64);
-//     CHECK(players[0].buildRoad(2) == false);
-//     CHECK(players[0].buildSettlement(2) == false);
-//     CHECK(players[0].buildCity(2) == false);
-//     CHECK(players[0].buyDevelopmentCard() == false);
+//     board.initializeBoard();
+//     board.initializePlayerSettlementsAndRoads(players[0], 5, 4, 21, 28);
 
-//     players[0].addResource(ResourceType::Wood, 1);
-//     players[0].addResource(ResourceType::Brick, 1);
-//     CHECK(players[0].buildRoad(2) == true);
-//     CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Brick) == 0);
+//     players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+//     players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+//     players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+//     players[0].useDevelopmentCard(1, players, board);
+//     CHECK(players[0].getVictoryPoints() == 2);
+//     players[0].useDevelopmentCard(2, players, board);
+//     CHECK(players[0].getVictoryPoints() == 2);
+//     players[0].useDevelopmentCard(3, players, board);
+//     CHECK(players[0].getVictoryPoints() == 4);
 
-//     players[0].addResource(ResourceType::Wood, 1);
-//     players[0].addResource(ResourceType::Brick, 1);
-//     players[0].addResource(ResourceType::Oat, 1);
-//     players[0].addResource(ResourceType::Wool, 1);
-//     CHECK(players[0].buildSettlement(2) == true);
+//     players[0].useDevelopmentCard(0, players, board);
 
-//     CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Brick) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
+//     CHECK(players[1].getResourceCount(ResourceType::Wood) == 0);
+//     CHECK(players[2].getResourceCount(ResourceType::Wood) == 0);
 
-//     players[0].addResource(ResourceType::Wood, 1);
-//     players[0].addResource(ResourceType::Brick, 1);
-//     players[0].addResource(ResourceType::Oat, 1);
-//     players[0].addResource(ResourceType::Wool, 1);
-//     players[0].addResource(ResourceType::Iron, 1);
-//     CHECK(players[0].buyDevelopmentCard() == true);
+//     CHECK(players[0].getResourceCount(ResourceType::Wood) == 3);
+//     players[0].addDevelopmentCard(DevelopmentCardType::RoadBuilding);
+//     players[0].useDevelopmentCard(3, players, board);
+//     players[0].printStatus();
+//     CHECK(players[0].getRoadCount() == 4);
 
-//     CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
-//     CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
-//     CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+//     players[0].addDevelopmentCard(DevelopmentCardType::YearOfPlenty);
+//     players[0].useDevelopmentCard(3, players, board);
+//     CHECK(players[0].getResourceCount(ResourceType::Iron) == 2);
+//     CHECK(players[0].getResourceCount(ResourceType::Oat) == 2);
 
-//     players[0].addResource(ResourceType::Oat, 1);
-//     players[0].addResource(ResourceType::Oat, 1);
-//     players[0].addResource(ResourceType::Iron, 1);
-//     players[0].addResource(ResourceType::Iron, 1);
-//     players[0].addResource(ResourceType::Iron, 1);
-//     CHECK(players[0].buildCity(2) == true);
-
-//     CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
-//     CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
-//     CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
-//     CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+//     players[0].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+//     players[0].useDevelopmentCard(3, players, board);
+//     CHECK(players[0].getVictoryPoints() == 5);
 //     Player::resetPlayerCount();
-//}
+// }
 
-TEST_CASE("Check player development cards")
+TEST_CASE("Trade resources")
 {
     std::vector<Player> players = {Player("Player1"), Player("Player2")};
 
-    players[0].addDevelopmentCard(DevelopmentCardType::Monopoly);
-    CHECK(players[0].hasDevelopmentCard(DevelopmentCardType::Monopoly) == true);
-    Board board;
-    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
-    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
-    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
-    players[0].useDevelopmentCard(1, players, board);
-    CHECK(players[0].getVictoryPoints() == 0);
-    players[0].useDevelopmentCard(1, players, board);
-    CHECK(players[0].getVictoryPoints() == 0);
-    players[0].useDevelopmentCard(1, players, board);
-    CHECK(players[0].getVictoryPoints() == 2);
-    players[0].useDevelopmentCard(0, players, board);
+    players[0].addResource(ResourceType::Brick, 3);
+    players[0].addResource(ResourceType::Oat, 3);
+    players[0].addResource(ResourceType::Iron, 3);
 
-    CHECK(players[0].getResourceCount(ResourceType::Wood) == 1);
+    players[1].addResource(ResourceType::Wood, 3);
+    players[1].addResource(ResourceType::Wool, 3);
 
-    // CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-    // CHECK(player[1].hasDevelopmentCard(DevelopmentCardType::Monopoly));
+    bool tradeSuccess = TradeManager::tradeResources(players[0], ResourceType::Brick, 2, players[1], ResourceType::Wood, 2);
+    CHECK(tradeSuccess);
 
-    // bool tradeSuccess = TradeManager::tradeDevelopmentCards(player1, player[1], DevelopmentCardType::Knight, DevelopmentCardType::Monopoly);
-    // CHECK(tradeSuccess);
-    // CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Monopoly));
-    // CHECK(!player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-    // CHECK(player[1].hasDevelopmentCard(DevelopmentCardType::Knight));
-    // CHECK(!player[1].hasDevelopmentCard(DevelopmentCardType::Monopoly));
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 2);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 1);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 3);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 3);
+
+    CHECK(players[1].getResourceCount(ResourceType::Wood) == 1);
+    CHECK(players[1].getResourceCount(ResourceType::Brick) == 2);
+    CHECK(players[1].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Iron) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Wool) == 3);
+
+    bool tradeSuccess_2 = TradeManager::tradeResources(players[0], ResourceType::Iron, 3, players[1], ResourceType::Brick, 2);
+    CHECK(tradeSuccess_2);
+
+    CHECK(players[0].getResourceCount(ResourceType::Wood) == 2);
+    CHECK(players[0].getResourceCount(ResourceType::Brick) == 3);
+    CHECK(players[0].getResourceCount(ResourceType::Oat) == 3);
+    CHECK(players[0].getResourceCount(ResourceType::Iron) == 0);
+
+    CHECK(players[1].getResourceCount(ResourceType::Wood) == 1);
+    CHECK(players[1].getResourceCount(ResourceType::Brick) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Oat) == 0);
+    CHECK(players[1].getResourceCount(ResourceType::Iron) == 3);
+    CHECK(players[1].getResourceCount(ResourceType::Wool) == 3);
+    Player::resetPlayerCount();
 }
 
-// TEST_CASE("Fail trade resources due to insufficient amount")
-// {
+TEST_CASE("Trade resources-Edge case")
+{
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
 
-// bool tradeSuccess = TradeManager::tradeResources(players[0], ResourceType::Wood, 2, players[1], ResourceType::Brick, 3);
-// CHECK(tradeSuccess);
-// CHECK(players[0].getResourceCount(ResourceType::Wood) == 3);
-// CHECK(players[0].getResourceCount(ResourceType::Brick) == 3);
-// CHECK(players[1].getResourceCount(ResourceType::Wood) == 2);
-// CHECK(players[1].getResourceCount(ResourceType::Brick) == 2);
-//     bool tradeSuccess = TradeManager::tradeDevelopmentCards(player1, player[1], DevelopmentCardType::Knight, DevelopmentCardType::Monopoly);
-//     CHECK(tradeSuccess);
-//     CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Monopoly));
-//     CHECK(!player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-//     CHECK(player[1].hasDevelopmentCard(DevelopmentCardType::Knight));
-//     CHECK(!player[1].hasDevelopmentCard(DevelopmentCardType::Monopoly));
-// Player player1("Player1");
-// Player player[1]("player[1]");
-//     Player player1("Player1");
-//     Player player[1]("player[1]");
+    players[0].addResource(ResourceType::Brick, 3);
+    players[0].addResource(ResourceType::Oat, 3);
+    players[0].addResource(ResourceType::Iron, 3);
 
-//     player1.addResource(ResourceType::Wood, 2);
-//     player[1].addResource(ResourceType::Brick, 3);
+    players[1].addResource(ResourceType::Wood, 3);
+    players[1].addResource(ResourceType::Wool, 3);
 
-//     CHECK(player1.getResourceCount(ResourceType::Wood) == 2);
-//     CHECK(player[1].getResourceCount(ResourceType::Brick) == 3);
+    bool tradeSuccess = TradeManager::tradeResources(players[0], ResourceType::Brick, 4, players[1], ResourceType::Wood, 2);
+    CHECK_FALSE(tradeSuccess);
 
-//     bool tradeSuccess = TradeManager::tradeResources(player1, ResourceType::Wood, 3, player[1], ResourceType::Brick, 2);
-//     CHECK(!tradeSuccess);
-//     CHECK(player1.getResourceCount(ResourceType::Wood) == 2);
-//     CHECK(player[1].getResourceCount(ResourceType::Brick) == 3);
-// }
+    bool tradeSuccess_2 = TradeManager::tradeResources(players[0], ResourceType::Wool, 4, players[1], ResourceType::Wood, 2);
+    CHECK_FALSE(tradeSuccess_2);
 
-// TEST_CASE("Fail trade development cards due to absence of card")
-// {
-//     Player player1("Player1");
-//     Player player[1]("player[1]");
+    bool tradeSuccess_3 = TradeManager::tradeResources(players[0], ResourceType::Wool, 4, players[1], ResourceType::Wood, 2);
+    CHECK_FALSE(tradeSuccess_3);
+    bool tradeSuccess_4 = TradeManager::tradeResources(players[0], ResourceType::Brick, 3, players[1], ResourceType::Iron, 2);
+    CHECK_FALSE(tradeSuccess_4);
 
-//     player1.addDevelopmentCard(DevelopmentCardType::Knight);
+    bool tradeSuccess_5 = TradeManager::tradeResources(players[0], ResourceType::Brick, 3, players[1], ResourceType::Wood, 4);
+    CHECK_FALSE(tradeSuccess_5);
 
-//     CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-//     CHECK(!player[1].hasDevelopmentCard(DevelopmentCardType::Monopoly));
+    bool tradeSuccess_6 = TradeManager::tradeResources(players[0], ResourceType::Brick, 0, players[1], ResourceType::Wood, 0);
+    CHECK_FALSE(tradeSuccess_6);
 
-//     bool tradeSuccess = TradeManager::tradeDevelopmentCards(player1, player[1], DevelopmentCardType::Knight, DevelopmentCardType::Monopoly);
-//     CHECK(!tradeSuccess);
-//     CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-//     CHECK(!player[1].hasDevelopmentCard(DevelopmentCardType::Knight));
-// }
+    Player::resetPlayerCount();
+}
 
-// TEST_CASE("Building roads, settlements, and cities")
-// {
-//     Player player1("Player1");
+TEST_CASE("Trade-development cards knights")
 
-//     player1.addResource(ResourceType::Wood, 1);
-//     player1.addResource(ResourceType::Brick, 1);
-//     player1.addResource(ResourceType::Wool, 1);
-//     player1.addResource(ResourceType::Oat, 1);
-//     player1.addResource(ResourceType::Iron, 3);
-//     player1.addResource(ResourceType::Oat, 2);
+{
+    Board board;
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
+    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[0].useDevelopmentCard(0, players, board);
+    players[0].useDevelopmentCard(1, players, board);
+    players[0].useDevelopmentCard(2, players, board);
+    CHECK(players[0].getVictoryPoints() == 2);
 
-//     CHECK(player1.buildRoad(1));
-//     CHECK(player1.buildSettlement(2));
-//     CHECK(player1.buildCity(2));
+    players[1].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[1].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[1].addDevelopmentCard(DevelopmentCardType::Monopoly);
+    players[1].useDevelopmentCard(0, players, board);
+    players[1].useDevelopmentCard(1, players, board);
+    CHECK(players[1].getVictoryPoints() == 0);
+    bool tradeSuccess = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::Knight, DevelopmentCardType::Monopoly);
+    CHECK(tradeSuccess);
+    players[1].useDevelopmentCard(2, players, board);
+    CHECK(players[0].getVictoryPoints() == 0);
+    CHECK(players[1].getVictoryPoints() == 2);
+    Player::resetPlayerCount();
+}
 
-//     CHECK(player1.getRoadCount() == 1);
-//     CHECK(player1.getSettlementCount() == 0); // The settlement was upgraded to a city
-//     CHECK(player1.getCityCount() == 1);
-// }
+TEST_CASE("Trade-development cards Victory points")
 
-// // // TEST_CASE("Buying and using development cards")
-// // // {
-// // //     Player player1("Player1");
+{
+    Board board;
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
+    players[0].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+    players[0].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+    players[0].useDevelopmentCard(0, players, board);
+    players[0].useDevelopmentCard(0, players, board);
+    players[0].useDevelopmentCard(1, players, board);
+    CHECK(players[0].getVictoryPoints() == 2);
+    players[0].addDevelopmentCard(DevelopmentCardType::YearOfPlenty);
 
-// // //     player1.addResource(ResourceType::Iron, 1);
-// // //     player1.addResource(ResourceType::Wool, 1);
-// // //     player1.addResource(ResourceType::Oat, 1);
+    players[1].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+    players[1].useDevelopmentCard(0, players, board);
 
-// // //     player1.buyDevelopmentCard();
-// // //     CHECK(player1.hasDevelopmentCard(DevelopmentCardType::Knight) ||
-// // //           player1.hasDevelopmentCard(DevelopmentCardType::Monopoly) ||
-// // //           player1.hasDevelopmentCard(DevelopmentCardType::RoadBuilding) ||
-// // //           player1.hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) ||
-// // //           player1.hasDevelopmentCard(DevelopmentCardType::VictoryPoint));
+    CHECK(players[1].getVictoryPoints() == 1);
+    bool tradeSuccess = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::YearOfPlenty, DevelopmentCardType::VictoryPoint);
+    CHECK(tradeSuccess);
+    players[0].useDevelopmentCard(2, players, board);
+    CHECK(players[0].getVictoryPoints() == 3);
+    CHECK(players[1].getVictoryPoints() == 0);
+    CHECK(players[1].hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) == true);
 
-// // // if (player1.hasDevelopmentCard(DevelopmentCardType::Knight))
-// // // {
-// // //     player1.useDevelopmentCard(0, players, board);
-// // //     CHECK(!player1.hasDevelopmentCard(DevelopmentCardType::Knight));
-// // // }
-// // }
+    Player::resetPlayerCount();
+}
 
-// TEST_CASE("Resource distribution based on dice roll")
-// {
-//     Board board;
-//     board.initializeBoard();
+TEST_CASE("Trade-development cards mix")
 
-//     Player player1("Player1");
-//     Player player[1]("player[1]");
+{
+    Board board;
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
+    players[0].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+    players[0].addDevelopmentCard(DevelopmentCardType::RoadBuilding);
+    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[0].useDevelopmentCard(0, players, board);
 
-//     std::vector<Player> players = {Player("Player1"), Player("player[1]")};
+    players[1].addDevelopmentCard(DevelopmentCardType::YearOfPlenty);
 
-//     board.initializePlayerSettlementsAndRoads(player1, 3, 6, 28, 36);
-//     board.initializePlayerSettlementsAndRoads(player[1], 13, 14, 41, 55);
+    CHECK(players[0].getVictoryPoints() == 1);
+    bool tradeSuccess = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::Knight, DevelopmentCardType::YearOfPlenty);
+    CHECK(tradeSuccess);
 
-//     CHECK(player1.getResourceCount(ResourceType::Wood) == 1);
-//     CHECK(player[1].getResourceCount(ResourceType::Wood) == 0);
+    CHECK(players[1].hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) == false);
+    CHECK(players[1].hasDevelopmentCard(DevelopmentCardType::Knight) == true);
+    CHECK(players[0].hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) == true);
 
-//     board.distributeResources(9, players);
+    bool tradeSuccess_2 = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::YearOfPlenty, DevelopmentCardType::Knight);
+    CHECK(tradeSuccess_2);
 
-//     CHECK(player1.getResourceCount(ResourceType::Wood) == 2);
-//     CHECK(player[1].getResourceCount(ResourceType::Wood) == 0);
-// }
+    CHECK(players[1].hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) == true);
+    CHECK(players[1].hasDevelopmentCard(DevelopmentCardType::Knight) == false);
+    CHECK(players[0].hasDevelopmentCard(DevelopmentCardType::YearOfPlenty) == false);
+    CHECK(players[0].hasDevelopmentCard(DevelopmentCardType::Knight) == true);
+
+    Player::resetPlayerCount();
+}
+
+TEST_CASE("Trade-development cards edge cases")
+
+{
+    Board board;
+    std::vector<Player> players = {Player("Player1"), Player("Player2")};
+    players[0].addDevelopmentCard(DevelopmentCardType::VictoryPoint);
+    players[0].addDevelopmentCard(DevelopmentCardType::RoadBuilding);
+    players[0].addDevelopmentCard(DevelopmentCardType::Knight);
+    players[0].useDevelopmentCard(0, players, board);
+
+    players[1].addDevelopmentCard(DevelopmentCardType::YearOfPlenty);
+
+    bool tradeSuccess = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::Monopoly, DevelopmentCardType::YearOfPlenty);
+    CHECK_FALSE(tradeSuccess);
+    bool tradeSuccess_2 = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::YearOfPlenty, DevelopmentCardType::YearOfPlenty);
+    CHECK_FALSE(tradeSuccess_2);
+
+    bool tradeSuccess_3 = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::VictoryPoint, DevelopmentCardType::Knight);
+    CHECK_FALSE(tradeSuccess_3);
+
+    bool tradeSuccess_4 = TradeManager::tradeDevelopmentCards(players[0], players[1], DevelopmentCardType::Monopoly, DevelopmentCardType::Knight);
+    CHECK_FALSE(tradeSuccess_4);
+
+    Player::resetPlayerCount();
+}

@@ -50,9 +50,10 @@ int Player::getKnightCount() const
 {
     return knightCount;
 }
-int Player::addKnightCount()
+int Player::addKnightCount(int n)
 {
-    return knightCount++;
+    knightCount = knightCount + n;
+    return knightCount;
 }
 void Player::addResource(ResourceType type, int amount)
 {
@@ -208,7 +209,7 @@ void Player::addDevelopmentCard(DevelopmentCardType card)
 
 void Player::removeDevelopmentCard(DevelopmentCardType card)
 {
-    developmentCardBank.removeDevelopmentCard(card);
+    developmentCardBank.removeDevelopmentCard(card, *this);
 }
 void Player::resetPlayerCount()
 {

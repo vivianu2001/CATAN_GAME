@@ -2,6 +2,7 @@
 #define DEVELOPMENTCARD_HPP
 
 #include <iostream>
+#include "Enums.hpp"
 
 class Player;
 class Board;
@@ -10,6 +11,7 @@ class DevelopmentCard
 {
 public:
     virtual void useCard(Player &player, std::vector<Player> &players, Board &board) = 0;
+    virtual DevelopmentCardType getType() const = 0;
     virtual ~DevelopmentCard() = default;
 };
 

@@ -17,6 +17,20 @@ PromotionCard::PromotionCard(PromotionCardType type) : type(type)
         break;
     }
 }
+DevelopmentCardType PromotionCard::getType() const
+{
+    switch (type)
+    {
+    case PromotionCardType::MONOPOLY:
+        return DevelopmentCardType::Monopoly;
+    case PromotionCardType::BUILDING_ROADS:
+        return DevelopmentCardType::RoadBuilding;
+    case PromotionCardType::YEAR_OF_PLENTY:
+        return DevelopmentCardType::YearOfPlenty;
+    default:
+        return DevelopmentCardType::Knight; // or any default type if necessary
+    }
+}
 
 void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board &board)
 {
@@ -80,7 +94,7 @@ void PromotionCard::useCard(Player &player, std::vector<Player> &players, Board 
     }
     }
 }
-PromotionCardType PromotionCard::getType() const
+PromotionCardType PromotionCard::getTypeP() const
 {
     return type;
 }

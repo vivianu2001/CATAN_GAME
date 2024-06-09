@@ -2,6 +2,8 @@
 #define TRADEMANAGER_HPP
 
 #include "Player.hpp"
+#include "DevelopmentCard.hpp"
+#include "Enums.hpp"
 
 class TradeManager
 {

@@ -8,8 +8,9 @@ class PromotionCard : public DevelopmentCard
 {
 public:
     PromotionCard(PromotionCardType type);
+    DevelopmentCardType getType() const override;
     void useCard(Player &player, std::vector<Player> &players, Board &board) override;
-    PromotionCardType getType() const;
+    PromotionCardType getTypeP() const;
 
 private:
     PromotionCardType type;

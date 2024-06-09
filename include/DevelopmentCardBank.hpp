@@ -16,7 +16,7 @@ public:
 
     void addDevelopmentCard(DevelopmentCardType card);
     bool hasDevelopmentCard(DevelopmentCardType card) const;
-    void removeDevelopmentCard(DevelopmentCardType card);
+    void removeDevelopmentCard(DevelopmentCardType card, Player &player);
     void useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board);
     void printDevelopmentCards() const;
 

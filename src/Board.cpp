@@ -101,7 +101,7 @@ bool Board::isTwoRoadSegmentsAway(int vertexId, int playerId) const
         int neighbor2 = edges[edgeId].getVertex2();
         int neighborVertexId = (neighbor1 == vertexId) ? neighbor2 : neighbor1;
 
-        if (vertices[neighborVertexId].getOwner() != playerId)
+        if (vertices[neighborVertexId].getOwner() != -1)
         {
             return false;
         }
