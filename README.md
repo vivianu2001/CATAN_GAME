@@ -1,6 +1,5 @@
 # Catan Game🎲🛤️
 
-## Overview
 
 This project is an implementation of a simplified version of the Settlers of Catan board game for three players. The game includes basic rules for resource gathering, trading, building roads, settlements, cities, and using development cards. This README file provides details about the rules, class hierarchy, libraries used, and methods implemented.
 
