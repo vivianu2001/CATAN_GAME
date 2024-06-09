@@ -187,11 +187,28 @@ bool Player::buyDevelopmentCard()
     }
 }
 
-void Player::useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board)
+DevelopmentCardType Player::useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board)
 {
-    developmentCardBank.useDevelopmentCard(cardIndex, *this, players, board);
-}
+    if (cardIndex < developmentCards.size())
+    {
+        DevelopmentCardType cardType = developmentCards[cardIndex]->getType();
+        developmentCards[cardIndex]->useCard(*this, players, board);
 
+        // Only delete and erase the card if it's not a Knight or Victory Point card
+        if (cardType != DevelopmentCardType::Knight && cardType != DevelopmentCardType::VictoryPoint)
+        {
+            delete developmentCards[cardIndex];
+            developmentCards.erase(developmentCards.begin() + cardIndex);
+        }
+        return cardType;
+    }
+    else
+    {
+        std::cout << "Invalid card index" << std::endl;
+        // Handle invalid card index appropriately, possibly return a default value or handle the error
+        return DevelopmentCardType::Knight; // Default return value or handle appropriately
+    }
+}
 void Player::playKnightCard(std::vector<Player> &players)
 {
     knightCount++;

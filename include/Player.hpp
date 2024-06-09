@@ -44,10 +44,10 @@ public:
     bool buildCity(int vertexId);
     bool buyDevelopmentCard();
 
-    void useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board);
+    DevelopmentCardType useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board);
 
     void playKnightCard(std::vector<Player> &players);
-    void checkAndUpdateLargestArmy(std::vector<Player> &players);
+    // void checkAndUpdateLargestArmy(std::vector<Player> &players);
 
     bool hasDevelopmentCard(DevelopmentCardType card) const;
 

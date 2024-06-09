@@ -12,7 +12,7 @@ HEADERS = $(wildcard $(INCDIR)/*.hpp)
 TEST_SRCS = $(wildcard $(TESTDIR)/*.cpp)
 
 # Exclude main.cpp from the main object files
-MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(filter-out $(SRCDIR)/main.cpp,$(SRCS)))
+MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SRCS))
 TEST_OBJS = $(patsubst $(TESTDIR)/%.cpp,$(BUILDDIR)/%.o,$(TEST_SRCS))
 
 # Targets

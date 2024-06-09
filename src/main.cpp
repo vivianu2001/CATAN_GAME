@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <set>
 #include <cstdlib>
 #include <ctime>
 #include "Player.hpp"
@@ -8,17 +7,159 @@
 #include "Enums.hpp"
 #include "TradeManager.hpp"
 
+void trade(Player &player, std::vector<Player> &players);
+void buildRoad(Player &player, Board &board);
+void buildSettlement(Player &player, Board &board);
+void buildCity(Player &player, Board &board);
+void buyDevelopmentCard(Player &player);
+DevelopmentCardType useDevelopmentCard(Player &player, std::vector<Player> &players, Board &board);
+
 int rollDice();
+void trade(Player &player, std::vector<Player> &players)
+{
+    std::string tradeWith;
+    std::cout << "Player to trade with: ";
+    std::getline(std::cin, tradeWith);
+
+    if (tradeWith == player.getName())
+    {
+        std::cout << "You cannot trade with yourself." << std::endl;
+        return;
+    }
+
+    for (auto &otherPlayer : players)
+    {
+        if (otherPlayer.getName() == tradeWith)
+        {
+            std::string tradeType;
+            std::cout << "Trade type (r/d): ";
+            std::getline(std::cin, tradeType);
+
+            if (tradeType == "r")
+            {
+                std::string resource1, resource2;
+                int amount1, amount2;
+
+                std::cout << "Your resource (Wood, Brick, Wool, Iron, Oat): ";
+                std::getline(std::cin, resource1);
+                std::cout << "Amount: ";
+                std::cin >> amount1;
+                std::cin.ignore();
+
+                std::cout << "Their resource (Wood, Brick, Wool, Iron, Oat): ";
+                std::getline(std::cin, resource2);
+                std::cout << "Amount: ";
+                std::cin >> amount2;
+                std::cin.ignore();
+
+                ResourceType res1 = stringToResourceType(resource1);
+                ResourceType res2 = stringToResourceType(resource2);
+
+                TradeManager::tradeResources(player, res1, amount1, otherPlayer, res2, amount2);
+            }
+            else if (tradeType == "d")
+            {
+                std::string cardType1, cardType2;
+
+                std::cout << "Your card type: ";
+                std::getline(std::cin, cardType1);
+                std::cout << "Their card type: ";
+                std::getline(std::cin, cardType2);
+
+                DevelopmentCardType card1 = stringToDevelopmentCardType(cardType1);
+                DevelopmentCardType card2 = stringToDevelopmentCardType(cardType2);
+
+                TradeManager::tradeDevelopmentCards(player, otherPlayer, card1, card2);
+            }
+            else
+            {
+                std::cout << "Invalid trade type." << std::endl;
+            }
+            return;
+        }
+    }
+
+    std::cout << "Player not found." << std::endl;
+}
+
+void buildRoad(Player &player, Board &board)
+{
+    int edgeId;
+    std::cout << "Edge ID: ";
+    std::cin >> edgeId;
+    std::cin.ignore();
+    if (board.buildRoad(player.getPlayerId(), edgeId))
+    {
+        player.buildRoad(edgeId);
+    }
+    else
+    {
+        std::cout << "Cannot build road." << std::endl;
+    }
+}
+
+void buildSettlement(Player &player, Board &board)
+{
+    int vertexId;
+    std::cout << "Vertex ID: ";
+    std::cin >> vertexId;
+    std::cin.ignore();
+    if (board.buildSettlement(player.getPlayerId(), vertexId, false))
+    {
+        player.buildSettlement(vertexId);
+    }
+    else
+    {
+        std::cout << "Cannot build settlement." << std::endl;
+    }
+}
+
+void buildCity(Player &player, Board &board)
+{
+    int vertexId;
+    std::cout << "Vertex ID: ";
+    std::cin >> vertexId;
+    std::cin.ignore();
+    if (board.buildCity(player.getPlayerId(), vertexId))
+    {
+        player.buildCity(vertexId);
+    }
+    else
+    {
+        std::cout << "Cannot build city." << std::endl;
+    }
+}
+
+void buyDevelopmentCard(Player &player)
+{
+    player.buyDevelopmentCard();
+}
+
+DevelopmentCardType useDevelopmentCard(Player &player, std::vector<Player> &players, Board &board)
+{
+    int cardIndex;
+    std::cout << "Card index: ";
+    std::cin >> cardIndex;
+    std::cin.ignore();
+    return player.useDevelopmentCard(cardIndex, players, board);
+}
+
+int rollDice()
+{
+    int die1 = std::rand() % 6 + 1;
+    int die2 = std::rand() % 6 + 1;
+    return die1 + die2;
+}
 int main(int argc, char **argv)
 {
     std::srand(std::time(0));
     std::vector<Player> players;
     std::string name;
 
-    std::cout << "Welcome to Catan! Please enter the names of three players." << std::endl;
+    std::cout << "Welcome to Catan! Enter the names of three players." << std::endl;
     for (int i = 1; i <= 3; ++i)
     {
-        std::cout << "Enter name for Player " << i << ": ";
+        std::cout << "Player " << i << " name: ";
         std::getline(std::cin, name);
         players.emplace_back(name);
     }
@@ -46,153 +187,53 @@ int main(int argc, char **argv)
             board.distributeResources(diceRoll, players);
             player.printStatus();
 
-            std::string action;
-            while (true)
+            bool endTurn = false;
+            while (!endTurn)
             {
-                std::cout << "\nChoose an action: trade, build_road, trade_development, build_settlement, build_city, buy_development_card, use_development_card, end_turn: ";
+                std::string action;
+                std::cout << "\nAction (t: trade, r: road, s: settlement, c: city, b: buy card, u: use card, e: end turn): ";
                 std::getline(std::cin, action);
 
-                if (action == "trade")
+                if (action == "t")
                 {
-                    std::string tradeWith;
-                    std::cout << "Enter the name of the player you want to trade with: ";
-                    std::getline(std::cin, tradeWith);
-
-                    if (tradeWith == player.getName())
+                    trade(player, players);
+                    endTurn = true;
+                }
+                else if (action == "r")
+                {
+                    buildRoad(player, board);
+                    endTurn = true;
+                }
+                else if (action == "s")
+                {
+                    buildSettlement(player, board);
+                    endTurn = true;
+                }
+                else if (action == "c")
+                {
+                    buildCity(player, board);
+                    endTurn = true;
+                }
+                else if (action == "b")
+                {
+                    buyDevelopmentCard(player);
+                    endTurn = true;
+                }
+                else if (action == "u")
+                {
+                    DevelopmentCardType cardType = useDevelopmentCard(player, players, board);
+                    if (cardType != DevelopmentCardType::YearOfPlenty)
                     {
-                        std::cout << "You cannot trade with yourself." << std::endl;
-                        continue;
-                    }
-
-                    bool playerFound = false;
-                    for (auto &otherPlayer : players)
-                    {
-                        if (otherPlayer.getName() == tradeWith)
-                        {
-                            std::string tradeType;
-                            std::cout << "Enter trade type (resource/development): ";
-                            std::getline(std::cin, tradeType);
-
-                            if (tradeType == "resource")
-                            {
-                                std::string resource1, resource2;
-                                int amount1, amount2;
-
-                                std::cout << "Enter the resource you want to trade (Wood, Brick, Wool, Iron, Oat): ";
-                                std::getline(std::cin, resource1);
-                                std::cout << "Enter the amount: ";
-                                std::cin >> amount1;
-                                std::cin.ignore();
-
-                                std::cout << "Enter the resource you want to receive (Wood, Brick, Wool, Iron, Oat): ";
-                                std::getline(std::cin, resource2);
-                                std::cout << "Enter the amount: ";
-                                std::cin >> amount2;
-                                std::cin.ignore();
-
-                                ResourceType res1 = stringToResourceType(resource1);
-                                ResourceType res2 = stringToResourceType(resource2);
-
-                                TradeManager::tradeResources(player, res1, amount1, otherPlayer, res2, amount2);
-                            }
-                            else if (tradeType == "development")
-                            {
-                                std::string cardType1, cardType2;
-
-                                std::cout << "Enter the type of development card you want to trade: ";
-                                std::getline(std::cin, cardType1);
-                                std::cout << "Enter the type of development card you want to receive: ";
-                                std::getline(std::cin, cardType2);
-
-                                DevelopmentCardType card1 = stringToDevelopmentCardType(cardType1);
-                                DevelopmentCardType card2 = stringToDevelopmentCardType(cardType2);
-
-                                TradeManager::tradeDevelopmentCards(player, otherPlayer, card1, card2);
-                            }
-                            else
-                            {
-                                std::cout << "Invalid trade type." << std::endl;
-                            }
-
-                            playerFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!playerFound)
-                    {
-                        std::cout << "Player not found. Please try again." << std::endl;
+                        endTurn = true;
                     }
                 }
-
-                else if (action == "build_road")
+                else if (action == "e")
                 {
-                    int edgeId;
-                    std::cout << "Enter edge ID to build road: ";
-                    std::cin >> edgeId;
-                    std::cin.ignore();
-                    if (board.buildRoad(player.getPlayerId(), edgeId))
-                    {
-                        player.buildRoad(edgeId);
-                    }
-
-                    else
-                    {
-                        std::cout << "Player cannot build road." << std::endl;
-                    }
-                }
-                else if (action == "build_settlement")
-                {
-                    int vertexId;
-                    std::cout << "Enter vertex ID to build settlement: ";
-                    std::cin >> vertexId;
-                    std::cin.ignore();
-                    if (board.buildSettlement(player.getPlayerId(), vertexId, false))
-                    {
-                        player.buildSettlement(vertexId);
-                    }
-
-                    else
-                    {
-                        std::cout << "Player cannot build settlement." << std::endl;
-                    }
-                }
-                else if (action == "build_city")
-                {
-                    int vertexId;
-                    std::cout << "Enter vertex ID to build city: ";
-                    std::cin >> vertexId;
-                    std::cin.ignore();
-                    if (board.buildCity(player.getPlayerId(), vertexId))
-                    {
-                        player.buildCity(vertexId);
-                    }
-
-                    else
-                    {
-                        std::cout << "Player cannot build city." << std::endl;
-                    }
-                }
-
-                else if (action == "buy_development_card")
-                {
-                    player.buyDevelopmentCard();
-                }
-                else if (action == "use_development_card")
-                {
-                    int cardIndex;
-                    std::cout << "Enter the index of the development card to use: ";
-                    std::cin >> cardIndex;
-                    std::cin.ignore();
-                    player.useDevelopmentCard(cardIndex, players, board);
-                }
-                else if (action == "end_turn")
-                {
-                    break;
+                    endTurn = true;
                 }
                 else
                 {
-                    std::cout << "Invalid action. Please try again.";
+                    std::cout << "Invalid action. Try again.";
                 }
             }
 
@@ -209,11 +250,4 @@ int main(int argc, char **argv)
     }
 
     return 0;
-}
-
-int rollDice()
-{
-    int die1 = std::rand() % 6 + 1;
-    int die2 = std::rand() % 6 + 1;
-    return die1 + die2;
 }
