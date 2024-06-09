@@ -1,4 +1,4 @@
-# Catan Game🎲🏝️🛤️
+# Catan Game🎲🛤️
 
 ## Overview
 
