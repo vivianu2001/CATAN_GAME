@@ -9,9 +9,7 @@ bool RoadBank::canAfford(const Player &player) const
 
 void RoadBank::purchase(Player &player)
 {
-    if (canAfford(player))
-    {
-        player.addResource(ResourceType::Wood, -1);
-        player.addResource(ResourceType::Brick, -1);
-    }
+
+    player.addResource(ResourceType::Wood, -1);
+    player.addResource(ResourceType::Brick, -1);
 }

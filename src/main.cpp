@@ -11,7 +11,7 @@ void trade(Player &player, std::vector<Player> &players);
 void buildRoad(Player &player, Board &board);
 void buildSettlement(Player &player, Board &board);
 void buildCity(Player &player, Board &board);
-void buyDevelopmentCard(Player &player);
+void buyDevelopmentCard(Player &player, std::vector<Player> &players, Board &board);
 DevelopmentCardType useDevelopmentCard(Player &player, std::vector<Player> &players, Board &board);
 
 int rollDice();
@@ -130,9 +130,9 @@ void buildCity(Player &player, Board &board)
     }
 }
 
-void buyDevelopmentCard(Player &player)
+void buyDevelopmentCard(Player &player, std::vector<Player> &players, Board &board)
 {
-    player.buyDevelopmentCard();
+    player.buyDevelopmentCard(players, board);
 }
 
 DevelopmentCardType useDevelopmentCard(Player &player, std::vector<Player> &players, Board &board)
@@ -165,7 +165,6 @@ int main(int argc, char **argv)
     }
 
     Board board;
-    board.initializeBoard();
 
     std::cout << "\nPlayers have joined the game!\n-----------------------------------\n";
 
@@ -216,7 +215,8 @@ int main(int argc, char **argv)
                 }
                 else if (action == "b")
                 {
-                    buyDevelopmentCard(player);
+                    buyDevelopmentCard(player, players, board);
+
                     endTurn = true;
                 }
                 else if (action == "u")

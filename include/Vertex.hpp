@@ -22,9 +22,6 @@ public:
     // Constructor that initializes the vertex with a unique ID
     Vertex(int id);
 
-    // Check if the vertex is occupied by any building
-    bool isOccupied() const;
-
     // Build a settlement or city on the vertex and assign it to a player
     void build(BuildingType type, int playerId);
 

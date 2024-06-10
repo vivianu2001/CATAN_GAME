@@ -5,16 +5,21 @@
 
 Board::Board()
 {
-}
-
-void Board::initializeBoard()
-{
     initializeVertices();
     initializeEdges();
     initializeTiles();
     linkVerticesAndEdges();
     linkTiles();
 }
+
+// void Board::initializeBoard()
+// {
+//     initializeVertices();
+//     initializeEdges();
+//     initializeTiles();
+//     linkVerticesAndEdges();
+//     linkTiles();
+// }
 
 void Board::initializeVertices()
 {
@@ -37,25 +42,25 @@ void Board::initializeEdges()
 void Board::initializeTiles()
 {
     tiles.reserve(TILE_COUNT);
-    tiles.emplace_back(ResourceType::Iron, 10);
-    tiles.emplace_back(ResourceType::Wool, 2);
-    tiles.emplace_back(ResourceType::Wood, 9);
-    tiles.emplace_back(ResourceType::Oat, 12);
-    tiles.emplace_back(ResourceType::Brick, 6);
-    tiles.emplace_back(ResourceType::Wool, 4);
-    tiles.emplace_back(ResourceType::Brick, 10);
-    tiles.emplace_back(ResourceType::Oat, 9);
-    tiles.emplace_back(ResourceType::Wood, 11);
-    tiles.emplace_back(ResourceType::None, 0); // Desert
-    tiles.emplace_back(ResourceType::Wood, 3);
-    tiles.emplace_back(ResourceType::Iron, 8);
-    tiles.emplace_back(ResourceType::Wood, 8);
-    tiles.emplace_back(ResourceType::Iron, 3);
-    tiles.emplace_back(ResourceType::Oat, 4);
-    tiles.emplace_back(ResourceType::Wool, 5);
-    tiles.emplace_back(ResourceType::Brick, 5);
-    tiles.emplace_back(ResourceType::Oat, 6);
-    tiles.emplace_back(ResourceType::Wool, 11);
+    tiles.emplace_back(ResourceType::Iron, 10);  // 0
+    tiles.emplace_back(ResourceType::Wool, 2);   // 1
+    tiles.emplace_back(ResourceType::Wood, 9);   // 2
+    tiles.emplace_back(ResourceType::Oat, 12);   // 3
+    tiles.emplace_back(ResourceType::Brick, 6);  // 4
+    tiles.emplace_back(ResourceType::Wool, 4);   // 5
+    tiles.emplace_back(ResourceType::Brick, 10); // 6
+    tiles.emplace_back(ResourceType::Oat, 9);    // 7
+    tiles.emplace_back(ResourceType::Wood, 11);  // 8
+    tiles.emplace_back(ResourceType::None, 0);   // Desert //9
+    tiles.emplace_back(ResourceType::Wood, 3);   // 10
+    tiles.emplace_back(ResourceType::Iron, 8);   // 11
+    tiles.emplace_back(ResourceType::Wood, 8);   // 12
+    tiles.emplace_back(ResourceType::Iron, 3);   // 13
+    tiles.emplace_back(ResourceType::Oat, 4);    // 14
+    tiles.emplace_back(ResourceType::Wool, 5);   // 15
+    tiles.emplace_back(ResourceType::Brick, 5);  // 16
+    tiles.emplace_back(ResourceType::Oat, 6);    // 17
+    tiles.emplace_back(ResourceType::Wool, 11);  // 18
 }
 
 void Board::linkVerticesAndEdges()
@@ -149,7 +154,7 @@ bool Board::buildSettlement(int playerId, int vertexId, bool start)
         }
     }
     vertices[vertexId].setOwner(playerId);
-    std::cout << "Settlement is ready" << std::endl;
+    // std::cout << "Settlement is ready" << std::endl;
     return true;
 }
 
@@ -306,4 +311,16 @@ void Board::initializePlayerSettlementsAndRoads(Player &player, int settlement1,
 
     player.printStatus();
     std::cout << "-----------------------------------\n";
+}
+void Board::printTileVertices() const
+{
+    for (const auto &tile : tiles)
+    {
+        std::cout << "Tile " << tile.getNumber() << " (" << resourceTypeToString(tile.getResource()) << "): ";
+        for (const auto *vertex : tile.getVertices())
+        {
+            std::cout << vertex->getId() << " ";
+        }
+        std::cout << std::endl;
+    }
 }

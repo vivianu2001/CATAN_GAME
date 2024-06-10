@@ -44,6 +44,8 @@ void DevelopmentCardBank::addDevelopmentCard(DevelopmentCardType card)
     case DevelopmentCardType::VictoryPoint:
         developmentCards.push_back(new VictoryPointCard());
         break;
+    case DevelopmentCardType::None:
+        break;
     }
 }
 
@@ -106,7 +108,7 @@ void DevelopmentCardBank::removeDevelopmentCard(DevelopmentCardType card, Player
     }
 }
 
-void DevelopmentCardBank::useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board)
+DevelopmentCardType DevelopmentCardBank::useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board)
 {
     if (cardIndex < developmentCards.size())
     {
@@ -119,10 +121,12 @@ void DevelopmentCardBank::useDevelopmentCard(int cardIndex, Player &player, std:
             delete developmentCards[cardIndex];
             developmentCards.erase(developmentCards.begin() + cardIndex);
         }
+        return cardType;
     }
     else
     {
         std::cout << "Invalid card index" << std::endl;
+        return DevelopmentCardType::None;
     }
 }
 
@@ -150,7 +154,15 @@ void DevelopmentCardBank::printDevelopmentCards() const
         {
             std::cout << "Knight" << std::endl;
         }
+        else if (dynamic_cast<VictoryPointCard *>(card))
+        {
+            std::cout << "Victory Point" << std::endl;
+        }
     }
+}
+int DevelopmentCardBank::getCount() const
+{
+    return developmentCards.size();
 }
 DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
 {
@@ -187,11 +199,16 @@ DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
     case 3:
         card = DevelopmentCardType::Knight;
         KnightCards++;
+
         break;
     case 4:
         card = DevelopmentCardType::VictoryPoint;
         VictoryCards++;
-        player.addVictoryPoint(2);
+        // player.addVictoryPoint(1);
+        break;
+
+    case 5:
+        card = DevelopmentCardType::None;
         break;
     }
     return card;

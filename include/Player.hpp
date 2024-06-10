@@ -32,6 +32,7 @@ public:
     const std::vector<int> &getCities() const;
     int getCityCount() const;
     int getVictoryPoints() const;
+    int getDevCardsCount() const;
 
     void addResource(ResourceType type, int amount);
     void addRoad(int edgeId);
@@ -42,12 +43,11 @@ public:
     bool buildSettlement(int vertexId);
     bool buildRoad(int edgeId);
     bool buildCity(int vertexId);
-    bool buyDevelopmentCard();
+    bool buyDevelopmentCard(std::vector<Player> &players, Board &board);
 
     DevelopmentCardType useDevelopmentCard(int cardIndex, std::vector<Player> &players, Board &board);
 
     void playKnightCard(std::vector<Player> &players);
-    // void checkAndUpdateLargestArmy(std::vector<Player> &players);
 
     bool hasDevelopmentCard(DevelopmentCardType card) const;
 

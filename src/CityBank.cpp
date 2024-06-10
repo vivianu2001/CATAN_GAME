@@ -10,10 +10,8 @@ bool CityBank::canAfford(const Player &player) const
 
 void CityBank::purchase(Player &player)
 {
-    if (canAfford(player))
-    {
-        player.addResource(ResourceType::Iron, -3);
-        player.addResource(ResourceType::Oat, -2);
-        player.addVictoryPoint(1);
-    }
+
+    player.addResource(ResourceType::Iron, -3);
+    player.addResource(ResourceType::Oat, -2);
+    player.addVictoryPoint(1);
 }

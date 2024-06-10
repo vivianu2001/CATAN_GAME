@@ -18,7 +18,8 @@ enum class DevelopmentCardType
     RoadBuilding,
     YearOfPlenty,
     Monopoly,
-    VictoryPoint
+    VictoryPoint,
+    None
 };
 
 inline std::string resourceTypeToString(ResourceType type)

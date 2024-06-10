@@ -25,6 +25,8 @@ public:
     bool buildCity(int playerId, int vertexId);
     void initializePlayerSettlementsAndRoads(Player &player, int settlement1, int road1, int settlement2, int road2);
 
+    void printTileVertices() const;
+
 private:
     std::vector<Tile> tiles; // Vector containing all the tiles of the board.
     std::vector<Vertex> vertices;

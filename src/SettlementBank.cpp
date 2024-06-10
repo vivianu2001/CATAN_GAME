@@ -11,12 +11,10 @@ bool SettlementBank::canAfford(const Player &player) const
 
 void SettlementBank::purchase(Player &player)
 {
-    if (canAfford(player))
-    {
-        player.addResource(ResourceType::Wood, -1);
-        player.addResource(ResourceType::Brick, -1);
-        player.addResource(ResourceType::Wool, -1);
-        player.addResource(ResourceType::Oat, -1);
-        player.addVictoryPoint(1);
-    }
+
+    player.addResource(ResourceType::Wood, -1);
+    player.addResource(ResourceType::Brick, -1);
+    player.addResource(ResourceType::Wool, -1);
+    player.addResource(ResourceType::Oat, -1);
+    player.addVictoryPoint(1);
 }
