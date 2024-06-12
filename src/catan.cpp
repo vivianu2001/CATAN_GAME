@@ -8,6 +8,9 @@
 #include "TradeManager.hpp"
 #include "catan.hpp"
 #include <limits>
+#include <random>
+#include <unordered_map>
+#include <algorithm>
 
 
 
@@ -227,4 +230,42 @@ DevelopmentCardType useDevelopmentCard(Player &player, std::vector<Player> &play
     }
     std::cin.ignore();
     return player.useDevelopmentCard(cardIndex, players, board);
+}
+void handleRollOfSeven(std::vector<Player>& players) {
+    for (Player& player : players) {
+        int totalResources = player.getTotalResourceCount();
+        if (totalResources > 7) {
+            int resourcesToReturn = totalResources / 2;
+            std::cout << player.getName() << " must return " << resourcesToReturn << " resources to the pile." << std::endl;
+
+            // Collect all resource types the player has
+            std::vector<ResourceType> playerResources;
+            for (const auto& resource : {ResourceType::Wood, ResourceType::Brick, ResourceType::Wool, ResourceType::Iron, ResourceType::Oat}) {
+                int count = player.getResourceCount(resource);
+                for (int i = 0; i < count; ++i) {
+                    playerResources.push_back(resource);
+                }
+            }
+
+            // Randomly shuffle the resources
+            std::random_device rd;
+            std::mt19937 g(rd());
+            std::shuffle(playerResources.begin(), playerResources.end(), g);
+
+            // Remove the resources from the player, ensuring we do not remove more than the player has
+            std::unordered_map<ResourceType, int> resourcesRemoved;
+            for (int i = 0; i < resourcesToReturn; ++i) {
+                ResourceType resource = playerResources[i];
+                player.addResource(resource, -1);
+                resourcesRemoved[resource]++;
+            }
+
+            // Output the resources removed for verification
+            std::cout << player.getName() << " returned:";
+            for (const auto& entry : resourcesRemoved) {
+                std::cout << " " << entry.second << " " << resourceTypeToString(entry.first);
+            }
+            std::cout << std::endl;
+        }
+    }
 }

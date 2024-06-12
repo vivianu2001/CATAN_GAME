@@ -20,33 +20,34 @@ MAIN_OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(MAIN_SRCS))
 TEST_OBJS = $(patsubst $(TESTDIR)/%.cpp,$(BUILDDIR)/%.o,$(TEST_SRCS))
 
 # Targets
-TARGET = catan
+TARGET = run
 TEST_TARGET = test_catan
 
 all: $(TARGET) $(TEST_TARGET)
 
 $(TARGET): $(MAIN_OBJS) $(BUILDDIR)/main.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
-	./$@
 
-$(TEST_TARGET): $(TEST_OBJS) $(filter-out $(BUILDDIR)/main.o,$(MAIN_OBJS))
+$(TEST_TARGET): $(TEST_OBJS) $(MAIN_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
-	./$@
 
-# Pattern rule for building object files
+# Pattern rule for building object files from source directory
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
+# Pattern rule for building object files from test directory
 $(BUILDDIR)/%.o: $(TESTDIR)/%.cpp $(HEADERS)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # Run main program
 catan: $(TARGET)
+	./$(TARGET)
 
 # Run tests
 test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 
 valgrind: $(TEST_TARGET)
 	valgrind $(VALGRIND_FLAGS) ./$(TEST_TARGET)
@@ -57,4 +58,4 @@ tidy:
 clean:
 	rm -rf $(BUILDDIR) $(TARGET) $(TEST_TARGET)
 
-.PHONY: all clean catan test valgrind tidy
+.PHONY: all clean run test valgrind tidy

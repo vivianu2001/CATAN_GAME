@@ -1,7 +1,8 @@
-#include <string>
 #ifndef ENUMS_HPP
 #define ENUMS_HPP
-#include <stdexcept> 
+
+#include <string>
+#include <stdexcept>
 
 enum class ResourceType
 {
@@ -40,7 +41,7 @@ inline std::string resourceTypeToString(ResourceType type)
     case ResourceType::None:
         return "None";
     default:
-        return "Unknown";
+        throw std::invalid_argument("Invalid resource type");
     }
 }
 
@@ -58,8 +59,10 @@ inline std::string developmentCardTypeToString(DevelopmentCardType type)
         return "Monopoly";
     case DevelopmentCardType::VictoryPoint:
         return "Victory Point";
+    case DevelopmentCardType::None:
+        return "None";
     default:
-        return "Unknown";
+        throw std::invalid_argument("Invalid development card type");
     }
 }
 
@@ -90,7 +93,7 @@ inline DevelopmentCardType stringToDevelopmentCardType(const std::string &card)
         return DevelopmentCardType::Monopoly;
     if (card == "Victory Point")
         return DevelopmentCardType::VictoryPoint;
-    throw std::invalid_argument("Unknown development card type");
+    return DevelopmentCardType::None;
 }
 
 enum class PromotionCardType
