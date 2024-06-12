@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "Vertex.hpp"
 
 Vertex::Vertex(int id) : id(id), ownerPlayerId(-1) {}

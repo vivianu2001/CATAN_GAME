@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "SettlementBank.hpp"
 #include "Enums.hpp"
 #include "Player.hpp"

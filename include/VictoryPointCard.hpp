@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef VICTORYPOINTCARD_HPP
 #define VICTORYPOINTCARD_HPP
 

@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "Edge.hpp"
 
 Edge::Edge(int id) : id(id), road(false), ownerPlayerId(-1) {} // Initialize members to default values.

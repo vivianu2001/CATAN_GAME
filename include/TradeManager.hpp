@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef TRADEMANAGER_HPP
 #define TRADEMANAGER_HPP
 

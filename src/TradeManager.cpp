@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "TradeManager.hpp"
 #include <iostream>
 

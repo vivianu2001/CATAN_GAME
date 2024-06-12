@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "Tile.hpp"
 
 Tile::Tile(ResourceType resource, int number) : resource(resource), number(number) {}

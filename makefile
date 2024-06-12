@@ -1,3 +1,4 @@
+##//umanskyvivian@gmail.com
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Iinclude
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --error-exitcode=99

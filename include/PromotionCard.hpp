@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef PROMOTIONCARD_HPP
 #define PROMOTIONCARD_HPP
 

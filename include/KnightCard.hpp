@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef KNIGHTCARD_HPP
 #define KNIGHTCARD_HPP
 

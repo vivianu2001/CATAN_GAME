@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "PromotionCard.hpp"
 #include <iostream>
 #include "Player.hpp"

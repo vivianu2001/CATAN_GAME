@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef ENUMS_HPP
 #define ENUMS_HPP
 

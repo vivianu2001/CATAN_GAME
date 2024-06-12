@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef BANK_HPP
 #define BANK_HPP
 

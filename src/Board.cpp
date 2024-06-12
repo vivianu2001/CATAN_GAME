@@ -1,4 +1,4 @@
-// board.cpp
+//umanskyvivian@gmail.com
 #include "Board.hpp"
 #include <iostream>
 #include <set>

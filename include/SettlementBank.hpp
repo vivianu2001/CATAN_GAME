@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #ifndef SETTLEMENTBANK_HPP
 #define SETTLEMENTBANK_HPP
 

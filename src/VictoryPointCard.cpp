@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "VictoryPointCard.hpp"
 #include "Player.hpp"
 #include "Board.hpp"

@@ -1,3 +1,4 @@
+//umanskyvivian@gmail.com
 #include "CityBank.hpp"
 #include "Enums.hpp"
 #include "Player.hpp"

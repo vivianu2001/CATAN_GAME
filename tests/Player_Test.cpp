@@ -1,4 +1,4 @@
-
+//umanskyvivian@gmail.com
 #include "doctest.h"
 #include "Player.hpp"
 #include "Board.hpp"
