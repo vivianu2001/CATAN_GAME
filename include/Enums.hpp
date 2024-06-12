@@ -1,6 +1,7 @@
 #include <string>
 #ifndef ENUMS_HPP
 #define ENUMS_HPP
+#include <stdexcept> 
 
 enum class ResourceType
 {

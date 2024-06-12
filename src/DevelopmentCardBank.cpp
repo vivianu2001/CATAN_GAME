@@ -4,6 +4,7 @@
 #include "VictoryPointCard.hpp"
 #include "Player.hpp"
 #include "DevelopmentCard.hpp"
+#include <random>
 
 int DevelopmentCardBank ::KnightCards = 0;
 int DevelopmentCardBank ::VictoryCards = 0;
@@ -110,15 +111,15 @@ void DevelopmentCardBank::removeDevelopmentCard(DevelopmentCardType card, Player
 
 DevelopmentCardType DevelopmentCardBank::useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board)
 {
-    if (cardIndex < developmentCards.size())
+    if (static_cast<size_t>(cardIndex) < developmentCards.size())
     {
-        DevelopmentCardType cardType = developmentCards[cardIndex]->getType();
-        developmentCards[cardIndex]->useCard(player, players, board);
+        DevelopmentCardType cardType = developmentCards[static_cast<size_t>(cardIndex)]->getType();
+        developmentCards[static_cast<size_t>(cardIndex)]->useCard(player, players, board);
 
         // Only delete and erase the card if it's not a Knight or Victory Point card
         if (cardType != DevelopmentCardType::Knight && cardType != DevelopmentCardType::VictoryPoint)
         {
-            delete developmentCards[cardIndex];
+            delete developmentCards[static_cast<size_t>(cardIndex)];
             developmentCards.erase(developmentCards.begin() + cardIndex);
         }
         return cardType;
@@ -160,24 +161,28 @@ void DevelopmentCardBank::printDevelopmentCards() const
         }
     }
 }
-int DevelopmentCardBank::getCount() const
+std::size_t DevelopmentCardBank::getCount() const
 {
     return developmentCards.size();
 }
 DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
 {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 4);
 
-    int cardType = std::rand() % 5;
-    DevelopmentCardType card;
+    int cardType = dis(gen);
+    DevelopmentCardType card = DevelopmentCardType::None;
+
     if (VictoryCards == 4 && KnightCards < 3)
     {
         cardType = 3;
     }
-    if (VictoryCards < 4 && KnightCards == 3)
+    else if (VictoryCards < 4 && KnightCards == 3)
     {
         cardType = 4;
     }
-    if (VictoryCards == 4 && KnightCards == 3)
+    else if (VictoryCards == 4 && KnightCards == 3)
     {
         cardType = 0;
     }
@@ -186,30 +191,31 @@ DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
     {
     case 0:
         card = DevelopmentCardType::Monopoly;
-
         break;
     case 1:
         card = DevelopmentCardType::RoadBuilding;
-
         break;
     case 2:
         card = DevelopmentCardType::YearOfPlenty;
-
         break;
     case 3:
         card = DevelopmentCardType::Knight;
         KnightCards++;
-
         break;
     case 4:
         card = DevelopmentCardType::VictoryPoint;
         VictoryCards++;
-        // player.addVictoryPoint(1);
         break;
-
-    case 5:
+    default:
         card = DevelopmentCardType::None;
         break;
     }
+
     return card;
+}
+DevelopmentCardBank::~DevelopmentCardBank() {
+    // Destructor implementation (clean up resources)
+    for (auto card : developmentCards) {
+        delete card;
+    }
 }

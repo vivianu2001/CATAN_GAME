@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Enums.hpp"
+#include <vector>
 
 class Player;
 class Board;

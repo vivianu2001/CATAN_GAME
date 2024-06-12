@@ -19,9 +19,10 @@ public:
     void removeDevelopmentCard(DevelopmentCardType card, Player &player);
     DevelopmentCardType useDevelopmentCard(int cardIndex, Player &player, std::vector<Player> &players, Board &board);
     void printDevelopmentCards() const;
-    int getCount() const;
+    std::size_t getCount() const;
 
     DevelopmentCardType buyDevelopmentCard(Player &player);
+       ~DevelopmentCardBank();
 
 private:
     std::vector<DevelopmentCard *> developmentCards;

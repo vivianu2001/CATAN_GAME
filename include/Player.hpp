@@ -54,6 +54,8 @@ public:
     void addDevelopmentCard(DevelopmentCardType card);
 
     void printStatus() const;
+      ~Player();
+    
 
 private:
     static int playerCount;
@@ -71,6 +73,7 @@ private:
     SettlementBank settlementBank;
     CityBank cityBank;
     DevelopmentCardBank developmentCardBank;
+  
 };
 
 #endif // PLAYER_HPP

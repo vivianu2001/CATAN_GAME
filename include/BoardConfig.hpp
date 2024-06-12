@@ -2,8 +2,8 @@
 #include <vector>
 #include <utility>
 
-const int VERTEX_COUNT = 54;
-const int EDGE_COUNT = 71;
+const int VERTEX_COUNT = 55;
+const int EDGE_COUNT = 72;
 const int TILE_COUNT = 19;
 
 // Structure to define vertex-to-tile connections

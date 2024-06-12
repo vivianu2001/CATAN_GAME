@@ -5,6 +5,7 @@
 #include "KnightCard.hpp"
 #include "VictoryPointCard.hpp"
 #include "DevelopmentCardBank.hpp"
+#include <algorithm>
 
 int Player::playerCount = 0;
 
@@ -239,4 +240,11 @@ void Player::removeDevelopmentCard(DevelopmentCardType card)
 void Player::resetPlayerCount()
 {
     playerCount = 0;
+}
+Player::~Player()
+{
+    for (auto card : developmentCards)
+    {
+        delete card;
+    }
 }

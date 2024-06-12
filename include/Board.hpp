@@ -13,7 +13,6 @@ class Board
 {
 public:
     Board();
-    void initializeBoard();
     const std::vector<Tile> &getTiles() const;
     const std::vector<Vertex> &getVertices() const;
     const std::vector<Edge> &getEdges() const;
