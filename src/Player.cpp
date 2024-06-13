@@ -224,13 +224,6 @@ void Player::resetPlayerCount()
 {
     playerCount = 0;
 }
-// Player::~Player()
-// {
-//     for (auto card : developmentCards)
-//     {
-//         delete card;
-//     }
-// }
 
 
 int Player::getTotalResourceCount() const {

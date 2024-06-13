@@ -5,14 +5,12 @@
 #include "TradeManager.hpp"
 #include "catan.hpp"
 
-// // inputs :: Wood 20,26 Iron,Oat
 
 TEST_CASE("Checking adding and removing sources by buying ")
 {
     std::vector<Player> players = {Player("Player1"), Player("Player2")};
     Board board;
-    // board.initializePlayerSettlementsAndRoads(players[0], 13, 14, 41, 55);
-    // board.initializePlayerSettlementsAndRoads(players[1], 15, 18, 48, 64);
+  
     CHECK(players[0].buildRoad(2) == false);
     CHECK(players[0].buildSettlement(2) == false);
     CHECK(players[0].buildCity(2) == false);
@@ -63,7 +61,8 @@ TEST_CASE("Checking adding and removing sources by buying ")
     Player::resetPlayerCount();
 }
 
-// TEST_CASE("Check player development cards")
+// TEST_CASE("Check player development cards")  // inputs :: Wood 20,26 Iron,Oat
+
 // {
 //     std::vector<Player> players = {Player("Player1"), Player("Player2"), Player("Player3")};
 
@@ -74,7 +73,6 @@ TEST_CASE("Checking adding and removing sources by buying ")
 //     players[2].addResource(ResourceType::Wood, 1);
 
 //     Board board;
-//     // board.initializeBoard();
 //     board.initializePlayerSettlementsAndRoads(players[0], 5, 4, 21, 28);
 
 //     players[0].addDevelopmentCard(DevelopmentCardType::Knight);
@@ -373,12 +371,8 @@ TEST_CASE("Board distributeResources")
 {
     Board board;
 
-    // Using pointers to store references to Player objects
     std::vector<Player> players = {Player("Player1"), Player("Player2")};
 
-    // Distribute resources for dice roll 6
-
-    // Check if Player1 received 1 Wood
     CHECK(players[0].getResourceCount(ResourceType::Wood) == 0);
     CHECK(players[0].getResourceCount(ResourceType::Oat) == 0);
     CHECK(players[0].getResourceCount(ResourceType::Wool) == 0);
