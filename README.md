@@ -1,5 +1,4 @@
-# Catan Game🎲🛤️
-
+# Catan Game 🎲🛤️
 
 This project is an implementation of a simplified version of the Settlers of Catan board game for three players. The game includes basic rules for resource gathering, trading, building roads, settlements, cities, and using development cards. This README file provides details about the rules, class hierarchy, libraries used, and methods implemented.
 
@@ -29,6 +28,45 @@ This project is an implementation of a simplified version of the Settlers of Cat
 - **Use Development Card**: Players can use development cards they have acquired.
 - **End Turn**: Players can end their turn.
 
+### Resources and Construction
+
+#### Development Card
+- **Cost**: 1 Iron, 1 Wool, 1 Oat
+- **Types**:
+  - **Promotion Card**: Grants a temporary benefit and then is discarded. Types include:
+    - **Monopoly**: The player chooses one resource type, and all other players must give all their resources of that type to the player.
+    - **Road Building**: The player can build 2 roads for free.
+    - **Year of Plenty**: The player receives two resource cards of their choice from the bank.
+  - **Knights**: A player with 3 Knight cards receives the Largest Army card, worth 2 victory points. (There are only 3 Knight cards in total).
+  - **Victory Point Cards**: Each card gives the player 1 victory point. There are 4 such cards.
+
+#### Construction
+- **Road Section**:
+  - **Cost**: 1 Brick, 1 Wood
+  - **Conditions**: Can only be connected to a settlement (or city) owned by the player or to another road section.
+- **Settlement**:
+  - **Cost**: 1 Brick, 1 Wood, 1 Wool, 1 Oat
+  - **Conditions**: Can be built on an intersection connected by at least one road and at least two road segments away from another settlement. Each settlement gives 1 victory point.
+- **City**:
+  - **Cost**: 3 Iron, 2 Oats
+  - **Conditions**: Can replace an existing settlement. Each city gives 2 victory points and generates double the resources of a settlement.
+
+### Progress of the Game
+
+Each player starts the game with 2 settlements and 2 road segments, which give them 2 victory points. Players receive starting resources based on their initial settlements (one resource from each type). The order of play is determined arbitrarily.
+
+In each turn, players roll two dice. Depending on the result, players receive resources as described earlier. During their turn, a player can:
+
+1. Trade resources or development cards with other players.
+2. Build roads, settlements, or cities and buy development cards.
+3. Use development cards (if the player uses a development card, their turn ends immediately).
+
+If the dice roll totals 7, all players with more than 7 resource cards must return half of them to the resource pile.
+
+### Game Over
+
+The game ends when a player reaches 10 or more victory points. The player must have at least 10 points at the end of their turn to win the game.
+
 ## Class Hierarchy
 
 - **Board**: Manages the game board, resource distribution, and player settlements/roads.
@@ -48,8 +86,6 @@ This project is an implementation of a simplified version of the Settlers of Cat
 ## Methods Implemented
 
 ### Board Class
-
-- **initializeBoard**: Sets up the initial state of the game board.
 - **initializePlayerSettlementsAndRoads**: Places initial settlements and roads for players.
 - **distributeResources**: Distributes resources to players based on dice roll and board state.
 - **buildRoad**: Allows a player to build a road on a specified edge.
