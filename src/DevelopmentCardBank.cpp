@@ -215,7 +215,7 @@ DevelopmentCardType DevelopmentCardBank::buyDevelopmentCard(Player &player)
     return card;
 }
 DevelopmentCardBank::~DevelopmentCardBank() {
-    // Destructor implementation (clean up resources)
+
     for (auto card : developmentCards) {
         delete card;
     }

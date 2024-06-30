@@ -69,7 +69,7 @@ void Player::addRoad(int edgeId)
 void Player::addSettlement(int vertexId)
 {
     settlements.push_back(vertexId);
-    // addVictoryPoint(1);
+    
 }
 
 int Player::getSettlementCount() const

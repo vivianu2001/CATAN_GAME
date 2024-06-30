@@ -1,4 +1,4 @@
-//umanskyvivian@gmail.com
+// umanskyvivian@gmail.com
 #ifndef DEVELOPMENTCARDBANK_HPP
 #define DEVELOPMENTCARDBANK_HPP
 
@@ -23,7 +23,7 @@ public:
     std::size_t getCount() const;
 
     DevelopmentCardType buyDevelopmentCard(Player &player);
-       ~DevelopmentCardBank();
+    ~DevelopmentCardBank();
 
 private:
     std::vector<DevelopmentCard *> developmentCards;

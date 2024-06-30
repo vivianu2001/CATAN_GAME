@@ -77,15 +77,15 @@ void Board::linkTiles() {
     }
 }
 const std::vector<Tile> &Board::getTiles() const
-{ // Match the declaration: const function returning a const reference.
+{ 
     return tiles;
 }
 const std::vector<Edge> &Board::getEdges() const
-{ // Match the declaration: const function returning a const reference.
+{ 
     return edges;
 }
 const std::vector<Vertex> &Board::getVertices() const
-{ // Match the declaration: const function returning a const reference.
+{ 
     return vertices;
 }
 bool Board::isTwoRoadSegmentsAway(int vertexId, int playerId) const
@@ -114,7 +114,7 @@ bool Board::buildSettlement(int playerId, int vertexId, bool start)
 
     if (vertices[static_cast<size_t>(vertexId)].getOwner() != -1)
     {
-        // std::cout << "Settlement is already built at this vertex" << std::endl;
+        
         return false;
     }
     if (!start)
@@ -144,7 +144,7 @@ bool Board::buildSettlement(int playerId, int vertexId, bool start)
         }
     }
     vertices[static_cast<size_t>(vertexId)].setOwner(playerId);
-    // std::cout << "Settlement is ready" << std::endl;
+ 
     return true;
 }
 

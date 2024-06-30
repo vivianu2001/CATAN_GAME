@@ -422,8 +422,6 @@ TEST_CASE("Test handleRollOfSeven function") {
     players[1].addResource(ResourceType::Brick, 5);
     players[2].addResource(ResourceType::Wool, 10);
 
-  
-
     handleRollOfSeven(players);
 
     CHECK(players[0].getTotalResourceCount() == 4); // Should return 4 resources

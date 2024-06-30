@@ -1,4 +1,4 @@
-//umanskyvivian@gmail.com
+// umanskyvivian@gmail.com
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
@@ -55,27 +55,25 @@ public:
     void addDevelopmentCard(DevelopmentCardType card);
 
     void printStatus() const;
-    //   ~Player();
 
-      int getTotalResourceCount() const;
+    int getTotalResourceCount() const;
 
-  private:
-      static int playerCount;
+private:
+    static int playerCount;
 
-      int knightCount;
-      int playerId;
-      std::string name;
-      int victoryPoints;
-      std::map<ResourceType, int> resources;
-      std::vector<int> roads;
-      std::vector<int> settlements;
-      std::vector<int> cities;
-      std::vector<DevelopmentCard *> developmentCards; // Vector of pointers to DevelopmentCard
-      RoadBank roadBank;
-      SettlementBank settlementBank;
-      CityBank cityBank;
-      DevelopmentCardBank developmentCardBank;
-  
+    int knightCount;
+    int playerId;
+    std::string name;
+    int victoryPoints;
+    std::map<ResourceType, int> resources;
+    std::vector<int> roads;
+    std::vector<int> settlements;
+    std::vector<int> cities;
+    std::vector<DevelopmentCard *> developmentCards; // Vector of pointers to DevelopmentCard
+    RoadBank roadBank;
+    SettlementBank settlementBank;
+    CityBank cityBank;
+    DevelopmentCardBank developmentCardBank;
 };
 
 #endif // PLAYER_HPP
